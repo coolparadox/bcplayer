@@ -10,6 +10,10 @@ tags:
 	ctags -R --c-types=+p /usr/include
 	ctag -aR src/c
 
+play: build/bcplay
+	cp -ft /tmp $<
+	sudo -iu bcplayer1 /tmp/bcplay
+
 BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
 
 build/bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
