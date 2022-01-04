@@ -1,16 +1,17 @@
-.PHONY: all clean tags
+.PHONY: all clean tags setuid
 
-all: bcplay
+all: build/bcplay
 
 clean:
-	$(RM) bcplay
+	$(RM) -r build
 
 tags:
 	$(RM) tags
 	ctags -R --c-types=+p /usr/include
-	ctags -aR src/c
+	ctag -aR src/c
 
 BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
 
-bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
+build/bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
+	mkdir -p build
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o build/bcplay $(BCPLAY_SOURCES)
