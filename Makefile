@@ -8,7 +8,7 @@ clean:
 tags:
 	$(RM) tags
 	ctags -R --c-types=+p /usr/include
-	ctag -aR src/c
+	ctags -aR src/c
 
 play: build/bcplay
 	cp -ft /tmp $<
