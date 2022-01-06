@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <syslog.h>
 #include <unistd.h>
 
@@ -29,10 +30,10 @@
     exit(EXIT_FAILURE); \
 }
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
     setlogmask(LOG_UPTO(LOG_LEVEL));
     openlog(NULL, LOG_PERROR|LOG_PID, LOG_FACILITY);
-    log_notice("starting for player id %u", PLAYER_USERID);
+    log_notice("player %u: starting", PLAYER_USERID);
     if (getuid() != PLAYER_USERID) FAIL("my real user id (%u) is not %u", getuid(), PLAYER_USERID);
 
     log_debug("xstartup_path: %s", XSTARTUP_PATH);
@@ -42,18 +43,39 @@ void main(int argc, char** argv) {
         "unset SESSION_MANAGER\n"
         "unset DBUS_SESSION_BUS_ADDRESS\n"
         "i3 &\n"
+        "exec xterm\n"
         "exec firefox --new-instance --first-startup --sync --no-remote --private-window='http://app.bombcrypto.io/'\n");
     fclose(xstartup_file);
     if (chmod(XSTARTUP_PATH, S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IXGRP|S_IROTH)) FAIL("cannot change permissions of '%s': %s", XSTARTUP_PATH, strerror(errno));
+
+    // Spawn vnc server
     pid_t vncserver_pid = fork();
     switch (vncserver_pid) {
         case 0:
             execl("/usr/bin/vncserver", KIOSK_DISPLAY, "-geometry", XSTR(KIOSK_WIDTH) "x" XSTR(KIOSK_HEIGHT), "-autokill", "-xstartup", XSTARTUP_PATH, "-SecurityTypes", "None", NULL);
-            FAIL("cannot exec vncserver: %s", strerror(errno));
+            FAIL("cannot exec vnc server: %s", strerror(errno));
         case -1:
-            FAIL("cannot fork vncserver: %s", strerror(errno))
+            FAIL("cannot fork vnc server: %s", strerror(errno))
     }
-    log_debug("vncserver pid: %u", vncserver_pid);
+    log_debug("vnc server pid %u started at display %s", vncserver_pid, KIOSK_DISPLAY);
+    int status;
+    if (waitpid(vncserver_pid, &status, 0) == -1) FAIL("cannot wait for vnc server: %s", strerror(errno));
+    if (WIFEXITED(status)) log_debug("vnc server return code: %d", WEXITSTATUS(status));
 
-    FAIL("not yet implemented.")
+    // Spawn vnc viewer
+    pid_t vncviewer_pid = fork();
+    switch (vncviewer_pid) {
+        case 0:
+            execl("/usr/bin/vncviewer", KIOSK_DISPLAY, NULL);
+            FAIL("cannot exec vnc viewer: %s", strerror(errno));
+        case -1:
+            FAIL("cannot fork vnc viewer: %s", strerror(errno))
+    }
+    log_debug("vnc viewer pid %u started at display %s", vncviewer_pid, KIOSK_DISPLAY);
+
+    if (waitpid(vncviewer_pid, &status, 0) == -1) FAIL("cannot wait for vnc viewer: %s", strerror(errno));
+    if (WIFEXITED(status)) log_debug("vnc viewer return code: %d", WEXITSTATUS(status));
+
+    log_notice("player %u: terminated", PLAYER_USERID);
+    return 0;
 }

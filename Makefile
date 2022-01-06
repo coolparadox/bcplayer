@@ -10,9 +10,13 @@ tags:
 	ctags -R --c-types=+p /usr/include
 	ctags -aR src/c
 
-play: build/bcplay
+play: build/bcplay /home/bcplayer1/.Xauthority
 	cp -ft /tmp $<
 	sudo -iu bcplayer1 /tmp/bcplay
+
+/home/bcplayer1/.Xauthority: /home/lorandi/.Xauthority
+	sudo cp -f $< $@
+.PHONY: /home/bcplayer1/.Xauthority
 
 BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
 
