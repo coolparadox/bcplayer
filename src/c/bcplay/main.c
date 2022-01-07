@@ -19,7 +19,7 @@
 #define STR(X) #X
 #define XSTARTUP_PATH "/tmp/" XSTR(PLAYER_USERID) ".xstartup"
 
-#define log(LEVEL, ...) syslog(LOG_MAKEPRI(LOG_USER, LEVEL), __VA_ARGS__)
+#define log(LEVEL, ...) syslog(LOG_MAKEPRI(LOG_USER, LEVEL), XSTR(PLAYER_USERID) ": " __VA_ARGS__)
 
 #define log_debug(...) log(LOG_DEBUG, "debug: " __VA_ARGS__)
 #define log_notice(...) log(LOG_NOTICE, "notice: " __VA_ARGS__)
@@ -34,12 +34,8 @@ int main(int argc, char** argv) {
 
     // Setup logging
     assert(PLAYER_USERID == getuid());
-    char* username; {
-        struct passwd* user = getpwuid(PLAYER_USERID); assert(user);
-        username = strndup(user->pw_name, 0x10);
-    }
     setlogmask(LOG_UPTO(LOG_LEVEL));
-    openlog(username, LOG_PID, LOG_LOCAL0);
+    openlog(NULL, LOG_PID, LOG_LOCAL0);
     log_notice("player %u: started", PLAYER_USERID);
 
     // Spawn kiosk
