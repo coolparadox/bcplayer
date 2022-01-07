@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <syslog.h>
+#include <time.h>
 #include <unistd.h>
 
 #define LOG_LEVEL LOG_DEBUG
@@ -29,6 +30,16 @@
     log_err(__VA_ARGS__); \
     exit(EXIT_FAILURE); \
 }
+
+// BC state machine
+enum sm {
+    SM_START,
+    SM_QWERTY,
+    SM_END,
+};
+
+void sleep_random(unsigned int min, unsigned int max);
+enum sm sm_assess(enum sm state);
 
 int main(int argc, char** argv) {
 
@@ -56,13 +67,35 @@ int main(int argc, char** argv) {
     }
     log_debug("kiosk pid %u started at display %s", kiosk_pid, KIOSK_DISPLAY);
 
+    enum sm state = SM_START;
+    while (SM_END != (state = sm_assess(state))) sleep_random(5, 15);
+    log_debug("terminal state!");
+
     // Wait for kiosk termination
-    int status;
-    if (waitpid(kiosk_pid, &status, 0) == -1) FAIL("cannot wait for kiosk: %s", strerror(errno));
-    if (WIFEXITED(status)) log_debug("kiosk return code: %d", WEXITSTATUS(status));
+    {
+        log_debug("awaiting kiosk termination");
+        int pid_status;
+        if (waitpid(kiosk_pid, &pid_status, 0) == -1) FAIL("cannot wait for kiosk: %s", strerror(errno));
+        if (WIFEXITED(pid_status)) log_debug("kiosk return code: %d", WEXITSTATUS(pid_status));
+    }
 
     // Bye
     log_notice("player %u: terminated", PLAYER_USERID);
     return 0;
 
 }
+
+enum sm sm_assess(enum sm state) {
+    return state + 1;
+}
+
+void sleep_random(unsigned int min, unsigned int max) {
+    assert(max >= min);
+    srand(time(0));
+    unsigned long long int t = rand();
+    t *= max - min;
+    t += (unsigned long long int) RAND_MAX * min;
+    t /= RAND_MAX;
+    sleep((unsigned int) t);
+}
+
