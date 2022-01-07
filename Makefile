@@ -28,16 +28,19 @@ stop:
 .SILENT: stop
 
 /home/bcplayer1/bcplay: build/bcplay
+	sudo $(RM) $@
 	sudo cp -f $< $@
 .PHONY: /home/bcplayer1/bcplay
 .SILENT: /home/bcplayer1/bcplay
 
 /home/bcplayer1/.Xauthority: /home/lorandi/.Xauthority
+	sudo $(RM) $@
 	sudo cp -f $< $@
 .PHONY: /home/bcplayer1/.Xauthority
 .SILENT: /home/bcplayer1/.Xauthority
 
 /home/bcplayer1/xstartup: src/sh/xstartup
+	sudo $(RM) $@
 	sudo cp -f $< $@
 	sudo chown bcplayer1 $@
 	sudo chmod 0755 $@
@@ -48,4 +51,15 @@ BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
 
 build/bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
 	mkdir -p build
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o build/bcplay $(BCPLAY_SOURCES)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -ggdb -o build/bcplay $(BCPLAY_SOURCES)
+
+debug:
+	mkdir -p build
+	$(CC) $(CPPFLAGS) $(CFLAGS) -ggdb -DBC_DEBUG -o build/bcplay $(BCPLAY_SOURCES)
+	sudo $(RM) ~bcplayer1/bcplay
+	sudo cp -f build/bcplay ~bcplayer1/
+	sudo $(RM) ~bcplayer1/bcplay.pid
+	sudo -iu bcplayer1 vncserver :1 -geometry 960x600 -autokill -xstartup ~bcplayer1/xstartup -SecurityTypes None -AcceptSetDesktopSize=0
+	until test -e ~bcplayer1/bcplay.pid ; do true ; done
+	sudo gdb -p $$(sudo cat ~bcplayer1/bcplay.pid)
+.PHONY: debug

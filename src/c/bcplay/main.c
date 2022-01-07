@@ -43,6 +43,16 @@ enum sm sm_assess(enum sm state);
 
 int main(int argc, char** argv) {
 
+    {
+        FILE* pid_file = fopen("/home/bcplayer1/bcplay.pid", "w");
+        fprintf(pid_file, "%d\n", getpid());
+        fclose(pid_file);
+    }
+
+#ifdef BC_DEBUG
+    volatile int i = 1; while (i);
+#endif  // BC_DEBUG
+
     // Setup logging
     assert(PLAYER_USERID == getuid());
     setlogmask(LOG_UPTO(LOG_LEVEL));
@@ -96,6 +106,6 @@ void sleep_random(unsigned int min, unsigned int max) {
     t *= max - min;
     t += (unsigned long long int) RAND_MAX * min;
     t /= RAND_MAX;
-    sleep((unsigned int) t);
+    sleep(t);
 }
 
