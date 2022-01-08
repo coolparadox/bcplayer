@@ -10,6 +10,9 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 #define LOG_LEVEL LOG_DEBUG
 #define PLAYER_USERID 1002
 #define KIOSK_WIDTH 960
@@ -37,17 +40,28 @@
     exit(EXIT_FAILURE); \
 }
 
-// BC state machine
+// Player state machine
 enum states {
-    STATE_START,
-    STATE_END,
+    STATE_START,  // Wait for the kiosk window.
+    STATE_END,  // The kiosk process is over.
 };
 
-void sleep_random(unsigned int min, unsigned int max);
-void assess(void);
+// What is the game display showing?
+enum glimpses {
+    GLIMPSE_UNKNOWN,
+    GLIMPSE_KIOSK,  // The kiosk clean window.
+};
 
-pid_t kiosk_pid;
-enum states state;
+struct context {
+    time_t now;
+    pid_t kiosk_pid;
+    enum states state;
+    enum glimpses glimpse;
+    XImage* screenshot;
+    unsigned int sleep;
+};
+
+void assess(struct context* ctx);
 
 int main(int argc, char** argv) {
 
@@ -58,17 +72,26 @@ int main(int argc, char** argv) {
     }
 
 #ifdef BC_DEBUG
-    volatile int i = 1; while (i);
+    {
+        volatile int i = 1; while (i);  // Wait for the debugger to attach.
+    }
 #endif  // BC_DEBUG
 
-    // Setup logging
+    // Setup logging.
     assert(PLAYER_USERID == getuid());
     setlogmask(LOG_UPTO(LOG_LEVEL));
     openlog(NULL, LOG_PID, LOG_LOCAL0);
     log_notice("player %u: started", PLAYER_USERID);
 
-    // Spawn kiosk
-    switch (kiosk_pid = fork()) {
+    // Initialize the player state.
+    struct context ctx;
+    time(&ctx.now);
+    ctx.state = STATE_START;
+    ctx.screenshot = NULL;
+    ctx.sleep = 0;
+
+    // Spawn a kiosk window.
+    switch (ctx.kiosk_pid = fork()) {
         case 0:
             //execl("/usr/bin/xterm", "", NULL);
             execl("/usr/bin/firefox"
@@ -82,60 +105,79 @@ int main(int argc, char** argv) {
         case -1:
             FAIL("cannot fork kiosk: %s", strerror(errno))
     }
-    log_debug("kiosk pid %u started at display %s", kiosk_pid, KIOSK_DISPLAY);
+    log_debug("kiosk pid %u started at display %s", ctx.kiosk_pid, KIOSK_DISPLAY);
 
-    // Play
-    state = STATE_START;
-    while (state != STATE_END) {
-        sleep_random(5, 15);
-        assess();
+    // Play!
+    while (ctx.state != STATE_END) {
+        sleep(ctx.sleep);
+        assess(&ctx);
+        // TODO: generate trace records for the context.
     }
     log_notice("player %u: terminated", PLAYER_USERID);
     return 0;
 
 }
 
-void sleep_random(unsigned int min, unsigned int max) {
+void glimpse(struct context* ctx);
+unsigned int sample_uniform(unsigned int min, unsigned int max);
+
+void assess(struct context* ctx) {
+
+    // Check if the kiosk is still alive.
+    int kiosk_pid_status;
+    pid_t pid = waitpid(ctx->kiosk_pid, &kiosk_pid_status, WNOHANG);
+    switch (pid) {
+        case -1: FAIL("cannot check for child pid %u status: %s", ctx->kiosk_pid, strerror(errno));
+        case 0: break;
+        default:
+            log_debug("kiosk termination");
+            ctx->state = STATE_END;
+            return;
+    }
+
+    // Interact with the game screen.
+    ctx->sleep = sample_uniform(5, 15);
+    glimpse(ctx);
+    switch (ctx->state) {
+
+        case STATE_START:
+
+            // Keep waiting for the kiosk window to appear.
+            if (ctx->glimpse != GLIMPSE_KIOSK) return;
+            // The kiosk window has just appeared.
+            // TODO: now what?
+            ctx->state = STATE_END;
+            return;
+
+        default: PANIC("unknown state %u", ctx->state);
+
+    }
+}
+
+unsigned int sample_uniform(unsigned int min, unsigned int max) {
     assert(max >= min);
     srand(time(0));
     unsigned long long int t = rand();
     t *= max - min;
     t += (unsigned long long int) RAND_MAX * min;
-    t /= RAND_MAX;
-    sleep(t);
+    return t / RAND_MAX;
 }
 
-enum glimpses {
-    GLIMPSE_UNKNOWN,
-    GLIMPSE_KIOSK,  // browser first appeared
-};
+void glimpse(struct context* ctx) {
 
-enum glimpses glimpse(void);
+    ctx->glimpse = GLIMPSE_UNKNOWN;
 
-void assess(void) {
-    int kiosk_pid_status;
-    pid_t pid = waitpid(kiosk_pid, &kiosk_pid_status, WNOHANG);
-    switch (pid) {
-        case -1:
-            FAIL("cannot check for child pid %u status: %s", kiosk_pid, strerror(errno));
-        case 0:
-            break;
-        default:
-            log_debug("kiosk termination");
-            state = STATE_END;
-            return;
-    }
-    switch (state) {
-        case STATE_START:
-            if (glimpse() != GLIMPSE_KIOSK) return;
-            state = STATE_END;
-            return;
-        default:
-            PANIC("unknown state %u", state);
-    }
-}
+    Display* display = XOpenDisplay(NULL);  // FIXME: check for errors
+    Window root = DefaultRootWindow(display);
+    XWindowAttributes attributes = { 0 };
+    XGetWindowAttributes(display, root, &attributes);
+    if (ctx->screenshot) XDestroyImage(ctx->screenshot);
+    ctx->screenshot = XGetImage(display, root, 0, 0, attributes.width, attributes.height, AllPlanes, ZPixmap);  // FIXME: check for errors
+    assert(ctx->screenshot);
 
-enum glimpses glimpse(void) {
-    return GLIMPSE_UNKNOWN;
+    log_debug("0x%lX", XGetPixel(ctx->screenshot, 0, 0));
+
+    XCloseDisplay(display);
+
 }
 

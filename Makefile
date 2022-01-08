@@ -1,3 +1,5 @@
+CFLAGS=-lX11
+
 all: build/bcplay
 .PHONY: all
 
