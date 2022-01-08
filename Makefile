@@ -34,8 +34,8 @@ stop:
 .SILENT: /home/bcplayer1/bcplay
 
 /home/bcplayer1/.Xauthority: /home/lorandi/.Xauthority
-	sudo $(RM) $@
 	sudo cp -f $< $@
+	sudo chown bcplayer1:bcplayer1 $@
 .PHONY: /home/bcplayer1/.Xauthority
 .SILENT: /home/bcplayer1/.Xauthority
 
@@ -51,7 +51,7 @@ BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
 
 build/bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
 	mkdir -p build
-	$(CC) $(CPPFLAGS) $(CFLAGS) -ggdb -o build/bcplay $(BCPLAY_SOURCES)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o build/bcplay $(BCPLAY_SOURCES)
 
 debug:
 	mkdir -p build

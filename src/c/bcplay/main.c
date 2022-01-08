@@ -25,21 +25,29 @@
 #define log_debug(...) log(LOG_DEBUG, "debug: " __VA_ARGS__)
 #define log_notice(...) log(LOG_NOTICE, "notice: " __VA_ARGS__)
 #define log_err(...) log(LOG_ERR, "error: " __VA_ARGS__)
+#define log_panic(...) log(LOG_CRIT, "panic: " __VA_ARGS__)
 
 #define FAIL(...) { \
     log_err(__VA_ARGS__); \
     exit(EXIT_FAILURE); \
 }
 
+#define PANIC(...) { \
+    log_panic(__VA_ARGS__); \
+    exit(EXIT_FAILURE); \
+}
+
 // BC state machine
-enum sm {
-    SM_START,
-    SM_QWERTY,
-    SM_END,
+enum states {
+    STATE_START,
+    STATE_END,
 };
 
 void sleep_random(unsigned int min, unsigned int max);
-enum sm sm_assess(enum sm state);
+void assess(void);
+
+pid_t kiosk_pid;
+enum states state;
 
 int main(int argc, char** argv) {
 
@@ -60,8 +68,7 @@ int main(int argc, char** argv) {
     log_notice("player %u: started", PLAYER_USERID);
 
     // Spawn kiosk
-    pid_t kiosk_pid = fork();
-    switch (kiosk_pid) {
+    switch (kiosk_pid = fork()) {
         case 0:
             //execl("/usr/bin/xterm", "", NULL);
             execl("/usr/bin/firefox"
@@ -77,26 +84,15 @@ int main(int argc, char** argv) {
     }
     log_debug("kiosk pid %u started at display %s", kiosk_pid, KIOSK_DISPLAY);
 
-    enum sm state = SM_START;
-    while (SM_END != (state = sm_assess(state))) sleep_random(5, 15);
-    log_debug("terminal state!");
-
-    // Wait for kiosk termination
-    {
-        log_debug("awaiting kiosk termination");
-        int pid_status;
-        if (waitpid(kiosk_pid, &pid_status, 0) == -1) FAIL("cannot wait for kiosk: %s", strerror(errno));
-        if (WIFEXITED(pid_status)) log_debug("kiosk return code: %d", WEXITSTATUS(pid_status));
+    // Play
+    state = STATE_START;
+    while (state != STATE_END) {
+        sleep_random(5, 15);
+        assess();
     }
-
-    // Bye
     log_notice("player %u: terminated", PLAYER_USERID);
     return 0;
 
-}
-
-enum sm sm_assess(enum sm state) {
-    return state + 1;
 }
 
 void sleep_random(unsigned int min, unsigned int max) {
@@ -107,5 +103,39 @@ void sleep_random(unsigned int min, unsigned int max) {
     t += (unsigned long long int) RAND_MAX * min;
     t /= RAND_MAX;
     sleep(t);
+}
+
+enum glimpses {
+    GLIMPSE_UNKNOWN,
+    GLIMPSE_KIOSK,  // browser first appeared
+};
+
+enum glimpses glimpse(void);
+
+void assess(void) {
+    int kiosk_pid_status;
+    pid_t pid = waitpid(kiosk_pid, &kiosk_pid_status, WNOHANG);
+    switch (pid) {
+        case -1:
+            FAIL("cannot check for child pid %u status: %s", kiosk_pid, strerror(errno));
+        case 0:
+            break;
+        default:
+            log_debug("kiosk termination");
+            state = STATE_END;
+            return;
+    }
+    switch (state) {
+        case STATE_START:
+            if (glimpse() != GLIMPSE_KIOSK) return;
+            state = STATE_END;
+            return;
+        default:
+            PANIC("unknown state %u", state);
+    }
+}
+
+enum glimpses glimpse(void) {
+    return GLIMPSE_UNKNOWN;
 }
 
