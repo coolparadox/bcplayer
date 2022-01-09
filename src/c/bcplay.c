@@ -6,7 +6,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <syslog.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -14,26 +13,7 @@
 #include <X11/Xutil.h>
 
 #include "bcplay_conf.h"
-
-#define XSTR(X) STR(X)
-#define STR(X) #X
-
-#define log(LEVEL, ...) syslog(LOG_MAKEPRI(LOG_USER, LEVEL), XSTR(PLAYER_USERID) ": " __VA_ARGS__)
-
-#define log_debug(...) log(LOG_DEBUG, "debug: " __VA_ARGS__)
-#define log_notice(...) log(LOG_NOTICE, "notice: " __VA_ARGS__)
-#define log_err(...) log(LOG_ERR, "error: " __VA_ARGS__)
-#define log_panic(...) log(LOG_CRIT, "panic: " __VA_ARGS__)
-
-#define FAIL(...) { \
-    log_err(__VA_ARGS__); \
-    exit(EXIT_FAILURE); \
-}
-
-#define PANIC(...) { \
-    log_panic(__VA_ARGS__); \
-    exit(EXIT_FAILURE); \
-}
+#include "bcplay_log.h"
 
 // Player state machine
 enum states {

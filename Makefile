@@ -49,8 +49,11 @@ stop:
 .PHONY: /home/bcplayer1/xstartup
 .SILENT: /home/bcplayer1/xstartup
 
-BCPLAY_HEADERS=src/c/bcplay_conf.h
-BCPLAY_SOURCES=src/c/bcplay.c
+BCPLAY_HEADERS = \
+	src/c/bcplay_conf.h \
+	src/c/bcplay_log.h \
+
+BCPLAY_SOURCES = src/c/bcplay.c
 
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
