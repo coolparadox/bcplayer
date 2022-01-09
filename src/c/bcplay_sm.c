@@ -15,6 +15,8 @@ enum bc_sm_states bc_sm_get_state() {
 
 int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation* result) {
 
+    result->hint = BC_HINT_NOTHING;
+    result->sleep = bc_random_sample_uniform(5, 15);
     switch (bc_sm_state) {
 
         case BC_STATE_END:
@@ -33,7 +35,6 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
             }
             // The kiosk window has just appeared.
             // TODO: now what?
-            bc_sm_state = BC_STATE_END;
             return 0;
 
         default:

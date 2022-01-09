@@ -3,7 +3,6 @@
 
 enum bc_sm_states {
     BC_STATE_START,
-    BC_STATE_KIOSK_OPENED,
     BC_STATE_END,  // Game over.
 };
 
