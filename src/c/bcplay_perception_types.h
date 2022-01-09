@@ -1,5 +1,5 @@
-#ifndef BCPLAY_PERCEPTION_TYPES_H
-#define BCPLAY_PERCEPTION_TYPES_H
+#ifndef BCPLAY_PERCEPTION_TYPES_H_SEEN
+#define BCPLAY_PERCEPTION_TYPES_H_SEEN
 
 #include "bcplay_conf.h"
 
@@ -20,4 +20,4 @@ struct bc_perception {
     union {} detail;
 };
 
-#endif  // BCPLAY_PERCEPTION_TYPES_H
+#endif  // BCPLAY_PERCEPTION_TYPES_H_SEEN

@@ -51,6 +51,7 @@ stop:
 
 BCPLAY_HEADERS = \
 	src/c/bcplay_conf.h \
+	src/c/bcplay_kiosk.h \
 	src/c/bcplay_log.h \
 	src/c/bcplay_perception.h \
 	src/c/bcplay_perception_types.h \
@@ -58,6 +59,8 @@ BCPLAY_HEADERS = \
 
 BCPLAY_SOURCES = \
 	src/c/bcplay.c \
+	src/c/bcplay_kiosk.c \
+	src/c/bcplay_kiosk_vars.c \
 	src/c/bcplay_perception.c \
 	src/c/bcplay_random.c \
 

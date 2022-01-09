@@ -1,15 +1,10 @@
 #include <assert.h>
-#include <errno.h>
-#include <pwd.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "bcplay_conf.h"
+#include "bcplay_kiosk.h"
 #include "bcplay_log.h"
 #include "bcplay_perception.h"
 #include "bcplay_random.h"
@@ -23,7 +18,6 @@ enum states {
 
 struct context {
     time_t now;
-    pid_t kiosk_pid;
     enum states state;
     struct bc_perception sight;
     unsigned int sleep;
@@ -50,7 +44,7 @@ int main(int argc, char** argv) {
     assert(BC_PLAYER_USERID == getuid());
     setlogmask(LOG_UPTO(BC_LOG_LEVEL));
     openlog(NULL, LOG_PID, LOG_LOCAL0);
-    log_notice("player %u: started", BC_PLAYER_USERID);
+    log_notice("player %u: hello", BC_PLAYER_USERID);
 
     // Initialize the player state.
     struct context ctx;
@@ -59,46 +53,30 @@ int main(int argc, char** argv) {
     ctx.sleep = 0;
 
     // Spawn a kiosk window.
-    switch (ctx.kiosk_pid = fork()) {
-        case 0:
-            //execl("/usr/bin/xterm", "", NULL);
-            execl("/usr/bin/firefox"
-                    , "--new-instance"
-                    , "--first-startup"
-                    , "--no-remote"
-                    , "--private-window"
-                    , "--kiosk"
-                    , NULL);
-            FAIL("cannot exec kiosk: %s", strerror(errno));
-        case -1:
-            FAIL("cannot fork kiosk: %s", strerror(errno))
-    }
-    log_debug("kiosk pid %u started at display %s", ctx.kiosk_pid, BC_KIOSK_DISPLAY);
+    bcplay_kiosk_spawn();
 
     // Play!
     while (ctx.state != STATE_END) {
+
         sleep(ctx.sleep);
+
+        {
+            int is_kiosk_alive;
+            if (bcplay_kiosk_is_alive(&is_kiosk_alive)) FAIL("cannot tell whether kiosk is alive");
+            if (!is_kiosk_alive) { log_debug("kiosk termination"); ctx.state = STATE_END; break; }
+        }
+
         if (assess(&ctx)) FAIL("cannot understand the game");
         // TODO: generate trace records for the context.
+
     }
-    log_notice("player %u: terminated", BC_PLAYER_USERID);
+
+    log_notice("player %u: bye", BC_PLAYER_USERID);
     return 0;
 
 }
 
 int assess(struct context* ctx) {
-
-    // Check if the kiosk is still alive.
-    int kiosk_pid_status;
-    pid_t pid = waitpid(ctx->kiosk_pid, &kiosk_pid_status, WNOHANG);
-    switch (pid) {
-        case -1: FAIL("cannot check for child pid %u status: %s", ctx->kiosk_pid, strerror(errno));
-        case 0: break;
-        default:
-            log_debug("kiosk termination");
-            ctx->state = STATE_END;
-            return 0;
-    }
 
     // Interact with the game screen.
     ctx->sleep = bc_random_sample_uniform(5, 15);
