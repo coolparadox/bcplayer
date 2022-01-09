@@ -11,7 +11,7 @@ struct bc_screenshot {
 
 enum bc_glimpse {
     BC_GLIMPSE_UNKNOWN,
-    BC_GLIMPSE_KIOSK,  // The kiosk first appearance.
+    BC_GLIMPSE_KIOSK,  // The kiosk window.
 };
 
 struct bc_perception {

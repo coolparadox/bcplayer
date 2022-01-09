@@ -12,6 +12,7 @@
 
 #define log_debug(...) log(LOG_DEBUG, "debug: " __VA_ARGS__)
 #define log_notice(...) log(LOG_NOTICE, "notice: " __VA_ARGS__)
+#define log_warning(...) log(LOG_WARNING, "warning: " __VA_ARGS__)
 #define log_err(...) log(LOG_ERR, "error: " __VA_ARGS__)
 #define log_panic(...) log(LOG_CRIT, "panic: " __VA_ARGS__)
 
