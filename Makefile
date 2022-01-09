@@ -54,10 +54,12 @@ BCPLAY_HEADERS = \
 	src/c/bcplay_log.h \
 	src/c/bcplay_perception.h \
 	src/c/bcplay_perception_types.h \
+	src/c/bcplay_random.h \
 
 BCPLAY_SOURCES = \
 	src/c/bcplay.c \
 	src/c/bcplay_perception.c \
+	src/c/bcplay_random.c \
 
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)

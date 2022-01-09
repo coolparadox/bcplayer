@@ -12,6 +12,7 @@
 #include "bcplay_conf.h"
 #include "bcplay_log.h"
 #include "bcplay_perception.h"
+#include "bcplay_random.h"
 
 // FIXME: bcplay_sm.h
 // Player state machine
@@ -85,9 +86,6 @@ int main(int argc, char** argv) {
 
 }
 
-// FIXME: bcplay_random.h
-unsigned int sample_uniform(unsigned int min, unsigned int max);
-
 int assess(struct context* ctx) {
 
     // Check if the kiosk is still alive.
@@ -103,7 +101,7 @@ int assess(struct context* ctx) {
     }
 
     // Interact with the game screen.
-    ctx->sleep = sample_uniform(5, 15);
+    ctx->sleep = bc_random_sample_uniform(5, 15);
     if (bc_perceive(&ctx->sight)) FAIL("cannot perceive screen");
     switch (ctx->state) {
 
@@ -121,11 +119,3 @@ int assess(struct context* ctx) {
     }
 }
 
-unsigned int sample_uniform(unsigned int min, unsigned int max) {
-    assert(max >= min);
-    srand(time(0));
-    unsigned long long int t = rand();
-    t *= max - min;
-    t += (unsigned long long int) RAND_MAX * min;
-    return t / RAND_MAX;
-}
