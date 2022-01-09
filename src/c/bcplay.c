@@ -29,7 +29,7 @@ struct context {
 };
 
 // FIXME: bcplay_interact.h?
-void assess(struct context* ctx);
+int assess(struct context* ctx);
 
 int main(int argc, char** argv) {
 
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
     // Play!
     while (ctx.state != STATE_END) {
         sleep(ctx.sleep);
-        assess(&ctx);
+        if (assess(&ctx)) FAIL("cannot understand the game");
         // TODO: generate trace records for the context.
     }
     log_notice("player %u: terminated", BC_PLAYER_USERID);
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 // FIXME: bcplay_random.h
 unsigned int sample_uniform(unsigned int min, unsigned int max);
 
-void assess(struct context* ctx) {
+int assess(struct context* ctx) {
 
     // Check if the kiosk is still alive.
     int kiosk_pid_status;
@@ -99,7 +99,7 @@ void assess(struct context* ctx) {
         default:
             log_debug("kiosk termination");
             ctx->state = STATE_END;
-            return;
+            return 0;
     }
 
     // Interact with the game screen.
@@ -110,11 +110,11 @@ void assess(struct context* ctx) {
         case STATE_START:
 
             // Keep waiting for the kiosk window to appear.
-            if (ctx->sight.glimpse != BC_GLIMPSE_KIOSK) return;
+            if (ctx->sight.glimpse != BC_GLIMPSE_KIOSK) return 0;
             // The kiosk window has just appeared.
             // TODO: now what?
             ctx->state = STATE_END;
-            return;
+            return 0;
 
         default: PANIC("unknown state %u", ctx->state);
 
