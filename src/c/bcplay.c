@@ -9,33 +9,26 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
 #include "bcplay_conf.h"
 #include "bcplay_log.h"
+#include "bcplay_perception.h"
 
+// FIXME: bcplay_sm.h
 // Player state machine
 enum states {
     STATE_START,  // Wait for the kiosk window.
     STATE_END,  // The kiosk process is over.
 };
 
-// What is the game display showing?
-enum glimpses {
-    GLIMPSE_UNKNOWN,
-    GLIMPSE_KIOSK,  // The kiosk clean window.
-};
-
 struct context {
     time_t now;
     pid_t kiosk_pid;
     enum states state;
-    enum glimpses glimpse;
-    XImage* screenshot;
+    struct bc_perception sight;
     unsigned int sleep;
 };
 
+// FIXME: bcplay_interact.h?
 void assess(struct context* ctx);
 
 int main(int argc, char** argv) {
@@ -53,16 +46,15 @@ int main(int argc, char** argv) {
 #endif  // BC_DEBUG
 
     // Setup logging.
-    assert(PLAYER_USERID == getuid());
-    setlogmask(LOG_UPTO(LOG_LEVEL));
+    assert(BC_PLAYER_USERID == getuid());
+    setlogmask(LOG_UPTO(BC_LOG_LEVEL));
     openlog(NULL, LOG_PID, LOG_LOCAL0);
-    log_notice("player %u: started", PLAYER_USERID);
+    log_notice("player %u: started", BC_PLAYER_USERID);
 
     // Initialize the player state.
     struct context ctx;
     time(&ctx.now);
     ctx.state = STATE_START;
-    ctx.screenshot = NULL;
     ctx.sleep = 0;
 
     // Spawn a kiosk window.
@@ -80,7 +72,7 @@ int main(int argc, char** argv) {
         case -1:
             FAIL("cannot fork kiosk: %s", strerror(errno))
     }
-    log_debug("kiosk pid %u started at display %s", ctx.kiosk_pid, KIOSK_DISPLAY);
+    log_debug("kiosk pid %u started at display %s", ctx.kiosk_pid, BC_KIOSK_DISPLAY);
 
     // Play!
     while (ctx.state != STATE_END) {
@@ -88,12 +80,12 @@ int main(int argc, char** argv) {
         assess(&ctx);
         // TODO: generate trace records for the context.
     }
-    log_notice("player %u: terminated", PLAYER_USERID);
+    log_notice("player %u: terminated", BC_PLAYER_USERID);
     return 0;
 
 }
 
-void glimpse(struct context* ctx);
+// FIXME: bcplay_random.h
 unsigned int sample_uniform(unsigned int min, unsigned int max);
 
 void assess(struct context* ctx) {
@@ -112,13 +104,13 @@ void assess(struct context* ctx) {
 
     // Interact with the game screen.
     ctx->sleep = sample_uniform(5, 15);
-    glimpse(ctx);
+    if (bc_perceive(&ctx->sight)) FAIL("cannot perceive screen");
     switch (ctx->state) {
 
         case STATE_START:
 
             // Keep waiting for the kiosk window to appear.
-            if (ctx->glimpse != GLIMPSE_KIOSK) return;
+            if (ctx->sight.glimpse != BC_GLIMPSE_KIOSK) return;
             // The kiosk window has just appeared.
             // TODO: now what?
             ctx->state = STATE_END;
@@ -137,22 +129,3 @@ unsigned int sample_uniform(unsigned int min, unsigned int max) {
     t += (unsigned long long int) RAND_MAX * min;
     return t / RAND_MAX;
 }
-
-void glimpse(struct context* ctx) {
-
-    ctx->glimpse = GLIMPSE_UNKNOWN;
-
-    Display* display = XOpenDisplay(NULL);  // FIXME: check for errors
-    Window root = DefaultRootWindow(display);
-    XWindowAttributes attributes = { 0 };
-    XGetWindowAttributes(display, root, &attributes);
-    if (ctx->screenshot) XDestroyImage(ctx->screenshot);
-    ctx->screenshot = XGetImage(display, root, 0, 0, attributes.width, attributes.height, AllPlanes, ZPixmap);  // FIXME: check for errors
-    assert(ctx->screenshot);
-
-    log_debug("0x%lX", XGetPixel(ctx->screenshot, 0, 0));
-
-    XCloseDisplay(display);
-
-}
-
