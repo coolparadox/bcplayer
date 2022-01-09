@@ -1,10 +1,10 @@
 CFLAGS=-lX11
 
-all: build/bcplay
+all: bcplay
 .PHONY: all
 
 clean:
-	$(RM) -r build
+	$(RM) -r bcplay
 .PHONY: clean
 
 tags:
@@ -29,7 +29,7 @@ stop:
 .PHONY: stop
 .SILENT: stop
 
-/home/bcplayer1/bcplay: build/bcplay
+/home/bcplayer1/bcplay: bcplay
 	sudo $(RM) $@
 	sudo cp -f $< $@
 .PHONY: /home/bcplayer1/bcplay
@@ -49,19 +49,18 @@ stop:
 .PHONY: /home/bcplayer1/xstartup
 .SILENT: /home/bcplayer1/xstartup
 
-BCPLAY_SOURCES=$(wildcard src/c/bcplay/*.c)
+BCPLAY_SOURCES=src/c/bcplay.c
 
-build/bcplay: $(BCPLAY_SOURCES) $(wildcard src/c/include/bcplay/*.h)
+bcplay: $(BCPLAY_SOURCES)
 	mkdir -p build
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o build/bcplay $(BCPLAY_SOURCES)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
 
 debug:
-	mkdir -p build
-	$(CC) $(CPPFLAGS) $(CFLAGS) -ggdb -DBC_DEBUG -o build/bcplay $(BCPLAY_SOURCES)
-	sudo $(RM) ~bcplayer1/bcplay
-	sudo cp -f build/bcplay ~bcplayer1/
+	$(MAKE) clean
+	$(MAKE) CFLAGS='-lX11 -ggdb -DBC_DEBUG' all
 	sudo $(RM) ~bcplayer1/bcplay.pid
-	sudo -iu bcplayer1 vncserver :1 -geometry 960x600 -autokill -xstartup ~bcplayer1/xstartup -SecurityTypes None -AcceptSetDesktopSize=0
+	$(MAKE) start
 	until test -e ~bcplayer1/bcplay.pid ; do true ; done
 	sudo gdb -p $$(sudo cat ~bcplayer1/bcplay.pid)
 .PHONY: debug
+
