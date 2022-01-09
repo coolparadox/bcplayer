@@ -13,15 +13,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#define LOG_LEVEL LOG_DEBUG
-#define PLAYER_USERID 1002
-#define KIOSK_WIDTH 960
-#define KIOSK_HEIGHT 600
-#define KIOSK_DISPLAY ":1"
+#include "bcplay_conf.h"
 
 #define XSTR(X) STR(X)
 #define STR(X) #X
-#define XSTARTUP_PATH "/tmp/" XSTR(PLAYER_USERID) ".xstartup"
 
 #define log(LEVEL, ...) syslog(LOG_MAKEPRI(LOG_USER, LEVEL), XSTR(PLAYER_USERID) ": " __VA_ARGS__)
 

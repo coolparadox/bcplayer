@@ -1,0 +1,10 @@
+#ifndef BCPLAY_CONF_H_SEEN
+#define BCPLAY_CONF_H_SEEN
+
+#define LOG_LEVEL LOG_DEBUG
+#define PLAYER_USERID 1002
+#define KIOSK_WIDTH 960
+#define KIOSK_HEIGHT 600
+#define KIOSK_DISPLAY ":1"
+
+#endif  // BCPLAY_CONF_H_SEEN
