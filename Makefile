@@ -80,3 +80,9 @@ debug:
 	sudo gdb -p $$(sudo cat ~bcplayer1/bcplay.pid)
 .PHONY: debug
 
+backup:
+	rm -r /tmp/bcplay.tar.gz.gpg
+	git archive --format=tar HEAD | gzip -c9 | gpg --output /tmp/bcplay.tar.gz.gpg -e -r coolparadox@gmail.com -
+	scp /tmp/bcplay.tar.gz.gpg lorandi@quark:src/
+.PHONY: backup
+
