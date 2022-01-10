@@ -15,13 +15,13 @@ enum bc_sm_states bc_sm_get_state() {
 
 int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation* result) {
 
-    result->hint = BC_HINT_NOTHING;
+    result->hint.hint = BC_HINT_NOTHING;
     result->sleep = bc_random_sample_uniform(5, 15);
     switch (bc_sm_state) {
 
         case BC_STATE_END:
             log_warning("I should not assess the ending state");
-            result->hint = BC_HINT_NOTHING;
+            result->hint.hint = BC_HINT_NOTHING;
             result->sleep = bc_random_sample_uniform(5, 15);
             return 0;
 
@@ -29,7 +29,7 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
 
             if (sight->glimpse != BC_GLIMPSE_KIOSK) {
                 // Wait for the kiosk window to appear.
-                result->hint = BC_HINT_NOTHING;
+                result->hint.hint = BC_HINT_NOTHING;
                 result->sleep = bc_random_sample_uniform(5, 15);
                 return 0;
             }

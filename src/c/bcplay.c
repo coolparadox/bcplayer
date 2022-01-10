@@ -1,13 +1,11 @@
 #include <assert.h>
 #include <stdio.h>
-//#include <time.h>
-//#include <unistd.h>
 
 #include "bcplay_conf.h"
 #include "bcplay_kiosk.h"
 #include "bcplay_log.h"
 #include "bcplay_perception.h"
-#include "bcplay_random.h"
+#include "bcplay_perform.h"
 #include "bcplay_sm.h"
 
 int main(int argc, char** argv) {
@@ -35,13 +33,10 @@ int main(int argc, char** argv) {
     bcplay_kiosk_spawn();
     while (bc_sm_get_state() != BC_STATE_END) {
         int is_kiosk_alive; if (bcplay_kiosk_is_alive(&is_kiosk_alive)) FAIL("cannot tell whether kiosk is alive");
-        if (!is_kiosk_alive) {
-            log_debug("kiosk termination");
-            break;
-        }
+        if (!is_kiosk_alive) { log_debug("kiosk termination"); break; }
         struct bc_perception sight; if (bc_perceive(&sight)) FAIL("cannot see the gameplay");
         struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) FAIL("cannot assess the gameplay");
-        // TODO: implement action
+        if (bc_perform(&advice.hint)) FAIL("cannot act on gameplay");
         sleep(advice.sleep);
         // TODO: trace the game walkthough
     }

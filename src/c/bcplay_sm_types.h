@@ -1,20 +1,16 @@
-#ifndef BCPLAY_MACHINE_TYPES_H_SEEN
-#define BCPLAY_MACHINE_TYPES_H_SEEN
+#ifndef BCPLAY_SM_TYPES_H_SEEN
+#define BCPLAY_SM_TYPES_H_SEEN
+
+#include "bcplay_hint_types.h"
 
 enum bc_sm_states {
     BC_STATE_START,
     BC_STATE_END,  // Game over.
 };
 
-enum bc_sm_hints {
-    BC_HINT_UNKNOWN,
-    BC_HINT_NOTHING,  // Just wait
-};
-
 struct bc_sm_recommendation {
-    enum bc_sm_hints hint;
+    struct bc_sm_hint hint;
     unsigned int sleep;
-    union {} detail;
 };
 
-#endif  // BCPLAY_MACHINE_TYPES_H_SEEN
+#endif  // BCPLAY_SM_TYPES_H_SEEN
