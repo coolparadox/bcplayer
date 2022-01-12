@@ -89,3 +89,8 @@ backup:
 	scp /tmp/bcplay.tar.gz.gpg lorandi@cafeina:src/
 .PHONY: backup
 
+shot:
+	FILE=$$(src/sh/get_screenshot) && echo "$$FILE" >&2 && xwud <$$FILE
+.PHONY: shot
+.SILENT: shot
+
