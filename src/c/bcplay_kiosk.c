@@ -40,7 +40,6 @@ int bcplay_kiosk_is_alive(int* answer) {
     return 0;
 }
 
-
 // int rmFiles(const char* pathname, const struct stat* sb, int typeflag, struct FTW* ftwbuf) {
 //     if (remove(pathname)) FAIL("cannot remove '%s': %s", pathname, strerror(errno));
 //     return 0;

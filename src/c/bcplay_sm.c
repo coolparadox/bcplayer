@@ -20,7 +20,7 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
     switch (bc_sm_state) {
 
         case BC_STATE_END:
-            log_warning("I should not assess the ending state");
+            log_warning("got an assessment request for the ending state");
             result->hint.hint = BC_HINT_NOTHING;
             result->sleep = bc_random_sample_uniform(5, 15);
             return 0;
