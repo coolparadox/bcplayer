@@ -1,4 +1,4 @@
-CFLAGS=-lX11
+override CFLAGS += -lX11
 
 all: bcplay
 .PHONY: all
@@ -74,13 +74,16 @@ BCPLAY_SOURCES = \
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
 
-debug:
-	$(MAKE) clean
-	$(MAKE) CFLAGS='-lX11 -ggdb -DBC_DEBUG' all
+gdb:
+	$(MAKE) CPPFLAGS='$(CPPFLAGS) -DBC_SPINLOCK' CFLAGS='$(CFLAGS) -ggdb' clean all
 	sudo $(RM) ~bcplayer1/bcplay.pid
 	$(MAKE) start
 	until test -e ~bcplayer1/bcplay.pid ; do true ; done
 	sudo gdb -p $$(sudo cat ~bcplayer1/bcplay.pid)
+.PHONY: debug
+
+debug:
+	$(MAKE) CPPFLAGS='$(CPPFLAGS) -DDEBUG' clean all
 .PHONY: debug
 
 backup:

@@ -16,11 +16,11 @@ int main(int argc, char** argv) {
         fclose(pid_file);
     }
 
-#ifdef BC_DEBUG
+#ifdef BC_SPINLOCK
     {
         volatile int i = 1; while (i);  // Wait for the debugger to attach.
     }
-#endif  // BC_DEBUG
+#endif  // BC_SPINLOCK
 
     // Setup logging.
     assert(BC_PLAYER_USERID == getuid());
