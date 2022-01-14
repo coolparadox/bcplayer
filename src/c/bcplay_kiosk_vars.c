@@ -2,5 +2,5 @@
 
 #include "bcplay_kiosk.h"
 
-pid_t bc_kiosk_pid;
+pid_t _bc_kiosk_pid;
 

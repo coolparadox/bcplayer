@@ -12,13 +12,13 @@ struct bc_bbox {
 };
 
 enum bc_sm_hints {
-    BC_HINT_UNKNOWN,
-    BC_HINT_NOTHING,
-    BC_HINT_CLICK,
-    BC_HINT_DRAG,
-    BC_HINT_WRITE,
-    BC_HINT_CLICK_WRITE,
-    BC_HINT_CHARACTER,
+    BC_HINT_UNKNOWN = 0,
+    BC_HINT_NOTHING = 1,
+    BC_HINT_CLICK = 2,
+    BC_HINT_DRAG = 3,
+    BC_HINT_WRITE = 4,
+    BC_HINT_CLICK_WRITE = 5,
+    BC_HINT_CHARACTER = 6,
 };
 
 struct bc_sm_hint_click {

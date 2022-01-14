@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <time.h>
 
 #include "bcplay_conf.h"
 #include "bcplay_kiosk.h"
@@ -32,14 +34,19 @@ int main(int argc, char** argv) {
     bc_sm_init();
     bcplay_kiosk_spawn();
     while (bc_sm_get_state() != BC_STATE_END) {
-        int is_kiosk_alive; if (bcplay_kiosk_is_alive(&is_kiosk_alive)) FAIL("cannot tell whether kiosk is alive");
-        if (!is_kiosk_alive) { log_debug("kiosk termination"); break; }
-        struct bc_perception sight; if (bc_perceive(&sight)) FAIL("cannot see the gameplay");
-        struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) FAIL("cannot assess the gameplay");
-        if (bc_perform(&advice.hint)) FAIL("cannot act on gameplay");
-        sleep(advice.sleep);
-        // TODO: trace the game walkthough
+        log_debug("main: loop");
+        struct bc_perception sight; if (bc_perceive(&sight)) fail("cannot see the gameplay");
+        struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) fail("cannot assess the gameplay");
+        if (bc_perform(&advice.hint)) fail("cannot act on gameplay");
+        log_debug("main: sleep: %u", advice.sleep);
+        time_t wakeup_time = time(NULL) + advice.sleep;
+        do {
+            sleep(1);
+            int is_kiosk_alive; if (bcplay_kiosk_is_alive(&is_kiosk_alive)) fail("cannot tell whether kiosk is alive");
+            if (!is_kiosk_alive) { log_debug("main: kiosk termination"); goto end; }
+        } while (time(NULL) <= wakeup_time);
     }
+end:
     log_notice("player %u: bye", BC_PLAYER_USERID);
     return 0;
 

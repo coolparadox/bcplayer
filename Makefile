@@ -14,6 +14,7 @@ tags:
 .PHONY: tags
 
 start: /home/bcplayer1/bcplay /home/bcplayer1/.Xauthority /home/bcplayer1/xstartup
+	sudo -iu bcplayer1 mkdir -p ~bcplayer1/bctrace
 	sudo -iu bcplayer1 vncserver :1 -geometry 960x600 -autokill -xstartup ~bcplayer1/xstartup -SecurityTypes None -AcceptSetDesktopSize=0
 .PHONY: start
 .SILENT: start
@@ -54,6 +55,8 @@ BCPLAY_HEADERS = \
 	src/c/bcplay_hint_types.h \
 	src/c/bcplay_kiosk.h \
 	src/c/bcplay_log.h \
+	src/c/bcplay_screenshot.h \
+	src/c/bcplay_screenshot_types.h \
 	src/c/bcplay_perception.h \
 	src/c/bcplay_perception_types.h \
 	src/c/bcplay_perform.h \
@@ -65,6 +68,8 @@ BCPLAY_SOURCES = \
 	src/c/bcplay.c \
 	src/c/bcplay_kiosk.c \
 	src/c/bcplay_kiosk_vars.c \
+	src/c/bcplay_screenshot.c \
+	src/c/bcplay_screenshot_vars.c \
 	src/c/bcplay_perception.c \
 	src/c/bcplay_perform.c \
 	src/c/bcplay_random.c \

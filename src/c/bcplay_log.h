@@ -22,12 +22,12 @@
 #define log_err(...) log(LOG_ERR, "error: " __VA_ARGS__)
 #define log_panic(...) log(LOG_CRIT, "panic: " __VA_ARGS__)
 
-#define FAIL(...) { \
+#define fail(...) { \
     log_err(__VA_ARGS__); \
     return 1; \
 }
 
-#define PANIC(...) { \
+#define panic(...) { \
     log_panic(__VA_ARGS__); \
     return 1; \
 }

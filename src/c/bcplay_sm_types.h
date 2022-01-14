@@ -4,8 +4,8 @@
 #include "bcplay_hint_types.h"
 
 enum bc_sm_states {
-    BC_STATE_START,
-    BC_STATE_END,  // Game over.
+    BC_STATE_START = 0,
+    BC_STATE_END = 1,  // Game over.
 };
 
 struct bc_sm_recommendation {

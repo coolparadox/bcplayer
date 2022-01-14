@@ -2,16 +2,11 @@
 #define BCPLAY_PERCEPTION_TYPES_H_SEEN
 
 #include "bcplay_conf.h"
-
-struct bc_screenshot {
-    unsigned int r[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-    unsigned int g[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-    unsigned int b[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-};
+#include "bcplay_screenshot_types.h"
 
 enum bc_glimpse {
-    BC_GLIMPSE_UNKNOWN,
-    BC_GLIMPSE_KIOSK,  // The kiosk window.
+    BC_GLIMPSE_UNKNOWN = 0,
+    BC_GLIMPSE_KIOSK = 1,
 };
 
 struct bc_perception {
