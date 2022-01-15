@@ -79,6 +79,16 @@ BCPLAY_SOURCES = \
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
 
+CHECK_HEADERS =
+
+CHECK_SOURCES = \
+	test/c/check.c \
+
+check: $(CHECK_SOURCES) $(CHECK_HEADERS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -lcmocka -o check $(CHECK_SOURCES)
+	./check
+.PHONY: check
+
 gdb:
 	$(MAKE) CPPFLAGS='$(CPPFLAGS) -DBC_SPINLOCK' CFLAGS='$(CFLAGS) -ggdb' clean all
 	sudo $(RM) ~bcplayer1/bcplay.pid
