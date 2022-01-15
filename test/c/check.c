@@ -21,9 +21,17 @@ static void test_perceive_noise(void** state) {
     assert_int_equal(sight.glimpse, BC_GLIMPSE_UNKNOWN);
 }
 
+static void test_perceive_black(void** state) {
+    struct bc_screenshot shot = { 0 };
+    struct bc_perception sight = { 0 };
+    assert_false(bc_perceive(&shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_BLACK);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_perceive_noise),
+        cmocka_unit_test(test_perceive_black),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

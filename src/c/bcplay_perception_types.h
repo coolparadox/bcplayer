@@ -6,7 +6,8 @@
 
 enum bc_glimpse {
     BC_GLIMPSE_UNKNOWN = 0,
-    BC_GLIMPSE_KIOSK = 1,
+    BC_GLIMPSE_BLACK = 1,
+    BC_GLIMPSE_KIOSK = 2,
 };
 
 struct bc_perception {

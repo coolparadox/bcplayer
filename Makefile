@@ -83,7 +83,7 @@ bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 CHECK_SOURCES = test/c/check.c $(BCPLAY_LIB_SOURCES)
 
 check:
-	$(CC) $(CPPFLAGS) -Isrc/c $(CFLAGS) -lcmocka -o check $(CHECK_SOURCES)
+	$(CC) $(CPPFLAGS) -Isrc/c $(CFLAGS) -lcmocka -ggdb -o check $(CHECK_SOURCES)
 	./check
 .PHONY: check
 
