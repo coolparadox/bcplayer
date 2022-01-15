@@ -64,8 +64,7 @@ BCPLAY_HEADERS = \
 	src/c/bcplay_sm.h \
 	src/c/bcplay_sm_types.h \
 
-BCPLAY_SOURCES = \
-	src/c/bcplay.c \
+BCPLAY_LIB_SOURCES = \
 	src/c/bcplay_kiosk.c \
 	src/c/bcplay_kiosk_vars.c \
 	src/c/bcplay_screenshot.c \
@@ -76,16 +75,15 @@ BCPLAY_SOURCES = \
 	src/c/bcplay_sm.c \
 	src/c/bcplay_sm_vars.c \
 
+BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
+
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
 
-CHECK_HEADERS =
+CHECK_SOURCES = test/c/check.c $(BCPLAY_LIB_SOURCES)
 
-CHECK_SOURCES = \
-	test/c/check.c \
-
-check: $(CHECK_SOURCES) $(CHECK_HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -lcmocka -o check $(CHECK_SOURCES)
+check:
+	$(CC) $(CPPFLAGS) -Isrc/c $(CFLAGS) -lcmocka -o check $(CHECK_SOURCES)
 	./check
 .PHONY: check
 
