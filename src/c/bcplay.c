@@ -10,6 +10,8 @@
 #include "bcplay_perform.h"
 #include "bcplay_sm.h"
 
+#define BC_MODULE "main"
+
 int main(int argc, char** argv) {
 
     {
@@ -34,16 +36,16 @@ int main(int argc, char** argv) {
     bc_sm_init();
     bcplay_kiosk_spawn();
     while (bc_sm_get_state() != BC_STATE_END) {
-        log_debug("main: loop");
+        log_debug("loop");
         struct bc_perception sight; if (bc_perceive(&sight)) fail("cannot see the gameplay");
         struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) fail("cannot assess the gameplay");
         if (bc_perform(&advice.hint)) fail("cannot act on gameplay");
-        log_debug("main: sleep: %u", advice.sleep);
+        log_debug("sleep: %u", advice.sleep);
         time_t wakeup_time = time(NULL) + advice.sleep;
         do {
             sleep(1);
             int is_kiosk_alive; if (bcplay_kiosk_is_alive(&is_kiosk_alive)) fail("cannot tell whether kiosk is alive");
-            if (!is_kiosk_alive) { log_debug("main: kiosk termination"); goto end; }
+            if (!is_kiosk_alive) { log_debug("kiosk termination"); goto end; }
         } while (time(NULL) <= wakeup_time);
     }
 end:

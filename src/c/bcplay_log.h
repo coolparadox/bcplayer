@@ -16,11 +16,11 @@
 
 #define log(LEVEL, ...) syslog(LOG_MAKEPRI(LOG_USER, LEVEL), XSTR(BC_PLAYER_USERID) ": " __VA_ARGS__)
 
-#define log_debug(...) do { if (BC_DEBUG) log(LOG_DEBUG, "debug: " __VA_ARGS__); } while (0)
-#define log_notice(...) log(LOG_NOTICE, "notice: " __VA_ARGS__)
-#define log_warning(...) log(LOG_WARNING, "warning: " __VA_ARGS__)
-#define log_err(...) log(LOG_ERR, "error: " __VA_ARGS__)
-#define log_panic(...) log(LOG_CRIT, "panic: " __VA_ARGS__)
+#define log_debug(...) do { if (BC_DEBUG) log(LOG_DEBUG, "debug: " BC_MODULE ": " __VA_ARGS__); } while (0)
+#define log_notice(...) log(LOG_NOTICE, "notice: " BC_MODULE ": " __VA_ARGS__)
+#define log_warning(...) log(LOG_WARNING, "warning: " BC_MODULE ": " __VA_ARGS__)
+#define log_err(...) log(LOG_ERR, "error: " BC_MODULE ": " __VA_ARGS__)
+#define log_panic(...) log(LOG_CRIT, "panic: " BC_MODULE ": " __VA_ARGS__)
 
 #define fail(...) { \
     log_err(__VA_ARGS__); \

@@ -9,6 +9,8 @@
 
 #include "bcplay_screenshot.h"
 
+#define BC_MODULE "screenshot"
+
 extern char _bc_screenshot_path[BC_PATH_MAX];
 
 // http://netpbm.sourceforge.net/doc/ppm.html
@@ -66,6 +68,6 @@ int bc_screenshot_acquire(struct bc_screenshot* to) {
     }
     XDestroyImage(img);
     XCloseDisplay(display);
-    log_debug("screenshot: %s", bc_screenshot_make_dump(to));
+    log_debug("acquired: %s", bc_screenshot_make_dump(to));
     return 0;
 }

@@ -3,6 +3,8 @@
 
 #include "bcplay_sm.h"
 
+#define BC_MODULE "sm"
+
 extern enum bc_sm_states _bc_sm_state;
 
 void bc_sm_init() {
@@ -20,13 +22,13 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
     switch (_bc_sm_state) {
 
         case BC_STATE_END:
-            log_warning("sm: got an assessment request for the ending state");
+            log_warning("got an assessment request for the ending state");
             return 0;
 
         case BC_STATE_START:
 
             // if (sight->glimpse != BC_GLIMPSE_KIOSK) { log_debug("sm: new state: start"); return 0; }
-            log_debug("sm: new state: start");
+            log_debug("state: start");
             return 0;
 
         default:

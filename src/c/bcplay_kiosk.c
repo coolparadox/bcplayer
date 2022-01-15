@@ -8,6 +8,8 @@
 
 #include "bcplay_kiosk.h"
 
+#define BC_MODULE "screenshot"
+
 extern pid_t _bc_kiosk_pid;
 
 // int rmFiles(const char* pathname, const struct stat* sb, int typeflag, struct FTW* ftwbuf);
@@ -28,7 +30,7 @@ pid_t bcplay_kiosk_spawn(void) {
         case -1:
             fail("cannot fork kiosk: %m")
     }
-    log_debug("child process %u started for the kiosk", _bc_kiosk_pid);
+    log_debug("kiosk pid: %u", _bc_kiosk_pid);
 }
 
 int bcplay_kiosk_is_alive(int* answer) {
