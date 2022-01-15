@@ -7,12 +7,13 @@
 enum bc_glimpse {
     BC_GLIMPSE_UNKNOWN = 0,
     BC_GLIMPSE_BLACK = 1,
-    BC_GLIMPSE_KIOSK = 2,
 };
+
+union bc_perception_detail {};
 
 struct bc_perception {
     enum bc_glimpse glimpse;
-    union {} detail;
+    union bc_perception_detail detail;
 };
 
 #endif  // BCPLAY_PERCEPTION_TYPES_H_SEEN
