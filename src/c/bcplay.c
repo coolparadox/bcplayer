@@ -8,6 +8,7 @@
 #include "bcplay_log.h"
 #include "bcplay_perception.h"
 #include "bcplay_perform.h"
+#include "bcplay_screenshot.h"
 #include "bcplay_sm.h"
 
 #define BC_MODULE "main"
@@ -37,7 +38,8 @@ int main(int argc, char** argv) {
     bcplay_kiosk_spawn();
     while (bc_sm_get_state() != BC_STATE_END) {
         log_debug("loop");
-        struct bc_perception sight; if (bc_perceive(&sight)) fail("cannot see the gameplay");
+        struct bc_screenshot screenshot; if (bc_screenshot_acquire(&screenshot)) fail("cannot acquire screenshot");
+        struct bc_perception sight; if (bc_perceive(&screenshot, &sight)) fail("cannot see the gameplay");
         struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) fail("cannot assess the gameplay");
         if (bc_perform(&advice.hint)) fail("cannot act on gameplay");
         log_debug("sleep: %u", advice.sleep);

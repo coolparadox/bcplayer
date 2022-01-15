@@ -10,7 +10,6 @@ enum bc_glimpse {
 };
 
 struct bc_perception {
-    struct bc_screenshot screenshot;
     enum bc_glimpse glimpse;
     union {} detail;
 };

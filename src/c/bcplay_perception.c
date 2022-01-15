@@ -7,12 +7,9 @@
 
 #define BC_MODULE "perception"
 
-int bc_perceive(struct bc_perception* result) {
-
-    if (bc_screenshot_acquire(&result->screenshot)) fail("cannot acquire screenshot");
+int bc_perceive(const struct bc_screenshot* input, struct bc_perception* result) {
     result->glimpse = BC_GLIMPSE_UNKNOWN;
     log_debug("glimpse: unknown");
     return 0;
-
 }
 
