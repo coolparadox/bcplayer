@@ -5,8 +5,10 @@
 #include "bcplay_screenshot_types.h"
 
 enum bc_glimpse {
-    BC_GLIMPSE_UNKNOWN = 0,
-    BC_GLIMPSE_BLACK = 1,
+    BC_GLIMPSE_UNKNOWN,
+    BC_GLIMPSE_BLACK,
+    BC_GLIMPSE_KIOSK_UPDATED,
+    BC_GLIMPSE_KIOSK_CLEAN,
 };
 
 union bc_perception_detail {};
