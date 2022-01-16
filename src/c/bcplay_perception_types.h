@@ -1,6 +1,7 @@
 #ifndef BCPLAY_PERCEPTION_TYPES_H_SEEN
 #define BCPLAY_PERCEPTION_TYPES_H_SEEN
 
+#include "bcplay_canvas_types.h"
 #include "bcplay_conf.h"
 
 enum bc_glimpse {
@@ -10,7 +11,11 @@ enum bc_glimpse {
     BC_GLIMPSE_KIOSK_CLEAN,
 };
 
-union bc_perception_detail {};
+union bc_perception_detail {
+    struct {
+        struct bc_bbox not_now;  // "Not now" clickable text
+    } kiosk_updated;
+};
 
 struct bc_perception {
     enum bc_glimpse glimpse;

@@ -1,15 +1,7 @@
 #ifndef BCPLAY_HINT_TYPES_H_SEEN
 #define BCPLAY_HINT_TYPES_H_SEEN
 
-struct bc_point {
-    unsigned int x;  // column
-    unsigned int y;  // row
-};
-
-struct bc_bbox {
-    struct bc_point tl;  // top left
-    struct bc_point br;  // bottom right
-};
+#include "bcplay_canvas_types.h"
 
 enum bc_sm_hints {
     BC_HINT_UNKNOWN = 0,

@@ -1,10 +1,10 @@
-override CFLAGS += -lX11
+override CFLAGS += -lm -lX11
 
 all: bcplay
 .PHONY: all
 
 clean:
-	$(RM) -r bcplay
+	$(RM) -r bcplay check src/ppm/bcplay_pack_vars.c
 .PHONY: clean
 
 tags:
@@ -76,6 +76,10 @@ BCPLAY_LIB_SOURCES = \
 	src/c/bcplay_random.c \
 	src/c/bcplay_sm.c \
 	src/c/bcplay_sm_vars.c \
+	src/ppm/bcplay_pack_vars.c \
+
+BCPACK_PPM_SOURCES = \
+	src/ppm/kiosk_updated_not_now.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 
@@ -84,10 +88,21 @@ bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 
 CHECK_SOURCES = test/c/check.c $(BCPLAY_LIB_SOURCES)
 
-check:
-	$(CC) $(CPPFLAGS) -Isrc/c $(CFLAGS) -lcmocka -ggdb -o check $(CHECK_SOURCES)
+check: $(CHECK_SOURCES)
+	$(CC) $(CPPFLAGS) -Isrc/c $(CFLAGS) -lcmocka -ggdb -O0 -o check $(CHECK_SOURCES)
 	./check
 .PHONY: check
+
+BCPACK_SOURCES = \
+	src/c/bcplay_pack.c \
+	src/c/bcplay_canvas.c \
+	src/c/bcplay_canvas_vars.c \
+
+bcpack: $(BCPACK_SOURCES) $(BCPLAY_HEADERS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcpack $(BCPACK_SOURCES)
+
+src/ppm/bcplay_pack_vars.c: bcpack $(BCPACK_PPM_SOURCES)
+	xargs -n1 ./bcpack >$@ <<<'$(BCPACK_PPM_SOURCES)'
 
 gdb:
 	$(MAKE) CPPFLAGS='$(CPPFLAGS) -DBC_SPINLOCK' CFLAGS='$(CFLAGS) -ggdb' clean all

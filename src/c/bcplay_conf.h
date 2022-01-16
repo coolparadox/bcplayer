@@ -1,6 +1,8 @@
 #ifndef BCPLAY_CONF_H_SEEN
 #define BCPLAY_CONF_H_SEEN
 
+#include <syslog.h>
+
 #define BC_LOG_LEVEL LOG_DEBUG
 #define BC_PLAYER_USERID 1002
 #define BC_KIOSK_WIDTH 960
