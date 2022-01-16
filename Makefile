@@ -51,12 +51,12 @@ stop:
 .SILENT: /home/bcplayer1/xstartup
 
 BCPLAY_HEADERS = \
+	src/c/bcplay_canvas_types.h \
 	src/c/bcplay_conf.h \
 	src/c/bcplay_hint_types.h \
 	src/c/bcplay_kiosk.h \
 	src/c/bcplay_log.h \
 	src/c/bcplay_screenshot.h \
-	src/c/bcplay_screenshot_types.h \
 	src/c/bcplay_perception.h \
 	src/c/bcplay_perception_types.h \
 	src/c/bcplay_perform.h \

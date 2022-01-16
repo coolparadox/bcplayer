@@ -7,7 +7,7 @@
 
 #define BC_MODULE "perception"
 
-int bc_perceive(const struct bc_screenshot* shot, struct bc_perception* sight) {
+int bc_perceive(const struct bc_canvas* shot, struct bc_perception* sight) {
 
     unsigned int max = 0;
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {

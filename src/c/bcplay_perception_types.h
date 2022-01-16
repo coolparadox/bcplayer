@@ -2,7 +2,6 @@
 #define BCPLAY_PERCEPTION_TYPES_H_SEEN
 
 #include "bcplay_conf.h"
-#include "bcplay_screenshot_types.h"
 
 enum bc_glimpse {
     BC_GLIMPSE_UNKNOWN,
