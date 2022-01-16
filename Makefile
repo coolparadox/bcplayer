@@ -51,6 +51,7 @@ stop:
 .SILENT: /home/bcplayer1/xstartup
 
 BCPLAY_HEADERS = \
+	src/c/bcplay_canvas.h \
 	src/c/bcplay_canvas_types.h \
 	src/c/bcplay_conf.h \
 	src/c/bcplay_hint_types.h \
@@ -65,10 +66,11 @@ BCPLAY_HEADERS = \
 	src/c/bcplay_sm_types.h \
 
 BCPLAY_LIB_SOURCES = \
+	src/c/bcplay_canvas.c \
+	src/c/bcplay_canvas_vars.c \
 	src/c/bcplay_kiosk.c \
 	src/c/bcplay_kiosk_vars.c \
 	src/c/bcplay_screenshot.c \
-	src/c/bcplay_screenshot_vars.c \
 	src/c/bcplay_perception.c \
 	src/c/bcplay_perform.c \
 	src/c/bcplay_random.c \

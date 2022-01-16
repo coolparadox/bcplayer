@@ -27,13 +27,13 @@ static void test_perceive_black(void** state) {
 }
 
 static void test_perceive_kiosk_updated(void** state) {
-    struct bc_canvas shot; assert_false(bc_screenshot_restore("test/samples/kiosk_updated.ppm", &shot));
+    struct bc_canvas shot; assert_false(bc_canvas_restore("test/samples/kiosk_updated.ppm", &shot));
     struct bc_perception sight; assert_false(bc_perceive(&shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_KIOSK_UPDATED);
 }
 
 static void test_perceive_kiosk_clean(void** state) {
-    struct bc_canvas shot; assert_false(bc_screenshot_restore("test/samples/kiosk_clean.ppm", &shot));
+    struct bc_canvas shot; assert_false(bc_canvas_restore("test/samples/kiosk_clean.ppm", &shot));
     struct bc_perception sight; assert_false(bc_perceive(&shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_KIOSK_CLEAN);
 }
