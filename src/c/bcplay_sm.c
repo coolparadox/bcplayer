@@ -23,6 +23,12 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
     switch (sight->glimpse) {
         case BC_GLIMPSE_UNKNOWN: return 0;
         case BC_GLIMPSE_BLACK: return bc_sm_assess_black(&sight->detail, advice);
+        case BC_GLIMPSE_KIOSK_UPDATED:
+            log_warning("'kiosk updated' assessment not implemented");
+            return 0;
+        case BC_GLIMPSE_KIOSK_CLEAN:
+            log_warning("'kiosk clean' assessment not implemented");
+            return 0;
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

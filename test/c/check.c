@@ -57,7 +57,7 @@ int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_perceive_black),
         cmocka_unit_test(test_perceive_kiosk_updated),
-        //cmocka_unit_test(test_perceive_kiosk_clean),
+        cmocka_unit_test(test_perceive_kiosk_clean),
         cmocka_unit_test(test_perceive_noise),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);

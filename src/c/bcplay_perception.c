@@ -44,6 +44,17 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
         cleanup_return(BC_GLIMPSE_KIOSK_UPDATED, "updated kiosk");
     }
 
+    // Clean kiosk?
+    unsigned int private_purple_count = 0;
+    for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
+        unsigned int r = shot->red[row][col];
+        unsigned int g = shot->green[row][col];
+        unsigned int b = shot->blue[row][col];
+        private_purple_count += (r == 0x25 && g == 0x00 && b == 0x3e) || (r == 0x1E && g == 0x00 && b == 0x32);
+    }
+    log_debug("purple count: %u", private_purple_count);
+    if (private_purple_count >= (unsigned int) BC_KIOSK_WIDTH * BC_KIOSK_HEIGHT * 8 / 10) cleanup_return(BC_GLIMPSE_KIOSK_CLEAN, "clean kiosk");
+
     // The screenshot does not reveal anything peculiar.
     cleanup_return(BC_GLIMPSE_UNKNOWN, "unknown");
 
