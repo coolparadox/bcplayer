@@ -62,8 +62,8 @@ BCPLAY_HEADERS = \
 	src/c/bcplay_perception_types.h \
 	src/c/bcplay_perform.h \
 	src/c/bcplay_random.h \
-	src/c/bcplay_sm.h \
-	src/c/bcplay_sm_types.h \
+	src/c/bcplay_planning.h \
+	src/c/bcplay_planning_types.h \
 
 BCPLAY_LIB_SOURCES = \
 	src/c/bcplay_canvas.c \
@@ -74,8 +74,8 @@ BCPLAY_LIB_SOURCES = \
 	src/c/bcplay_perception.c \
 	src/c/bcplay_perform.c \
 	src/c/bcplay_random.c \
-	src/c/bcplay_sm.c \
-	src/c/bcplay_sm_vars.c \
+	src/c/bcplay_planning.c \
+	src/c/bcplay_planning_vars.c \
 	src/ppm/bcplay_pack_vars.c \
 
 BCPACK_PPM_SOURCES = \

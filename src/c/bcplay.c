@@ -9,7 +9,7 @@
 #include "bcplay_perception.h"
 #include "bcplay_perform.h"
 #include "bcplay_screenshot.h"
-#include "bcplay_sm.h"
+#include "bcplay_planning.h"
 
 #define BC_MODULE "main"
 

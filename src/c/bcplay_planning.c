@@ -1,9 +1,9 @@
 #include "bcplay_log.h"
 #include "bcplay_random.h"
 
-#include "bcplay_sm.h"
+#include "bcplay_planning.h"
 
-#define BC_MODULE "sm"
+#define BC_MODULE "planning"
 
 extern enum bc_sm_states _bc_sm_state;
 

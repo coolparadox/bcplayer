@@ -1,5 +1,5 @@
-#ifndef BCPLAY_SM_TYPES_H_SEEN
-#define BCPLAY_SM_TYPES_H_SEEN
+#ifndef BCPLAY_PLANNING_TYPES_H_SEEN
+#define BCPLAY_PLANNING_TYPES_H_SEEN
 
 #include "bcplay_hint_types.h"
 
@@ -13,4 +13,4 @@ struct bc_sm_recommendation {
     unsigned int sleep;
 };
 
-#endif  // BCPLAY_SM_TYPES_H_SEEN
+#endif  // BCPLAY_PLANNING_TYPES_H_SEEN
