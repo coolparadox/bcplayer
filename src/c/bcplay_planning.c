@@ -28,15 +28,11 @@ int _bc_planning_assess_black(const union bc_perception_detail* detail, struct b
 int _bc_planning_assess_kiosk_clean(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The kiosk browser has just appeared.
     log_debug("advice: type the game url");
-    struct bc_planning_hint* hint = advice->hints;
-
-    // Bring Firefox URL pane
-    hint->type = BC_HINT_KEYBOARD_CLICK;
-    strcpy(hint->detail.keyboard_click.key, "ctrl+l");
-    hint++;
-
-    log_warning("'kiosk clean' assessment not implemented");
-    advice->sleep = 60;
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "ctrl+l");
+    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "app.bombcrypto.io");
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "return");
+    advice->sleep = 10;
     return 0;
 }
 

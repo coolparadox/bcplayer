@@ -9,9 +9,13 @@
 #define BC_MODULE "perform"
 
 int _bc_perform_keyboard_click(const xdo_t* xdo, const struct bc_hint_keyboark_click* detail) {
-    if (xdo_send_keysequence_window(xdo, CURRENTWINDOW, detail->key, 100000)) fail("cannot send key sequence");;
+    if (xdo_send_keysequence_window(xdo, CURRENTWINDOW, detail->key, 12000)) fail("cannot send key click");;
     return 0;
+}
 
+int _bc_perform_keyboard_sequence(const xdo_t* xdo, const struct bc_hint_keyboark_sequence* detail) {
+    if (xdo_enter_text_window(xdo, CURRENTWINDOW, detail->keys, 12000)) fail("cannot send key sequence");;
+    return 0;
 }
 
 int bc_perform(const struct bc_planning_hint* hints) {
@@ -22,6 +26,9 @@ int bc_perform(const struct bc_planning_hint* hints) {
             case 0: break;
             case BC_HINT_KEYBOARD_CLICK:
                 if(_bc_perform_keyboard_click(xdo, &hints->detail.keyboard_click)) cleanup_fail("cannot perform keyboard click");
+                break;
+            case BC_HINT_KEYBOARD_SEQUENCE:
+                if(_bc_perform_keyboard_sequence(xdo, &hints->detail.keyboard_sequence)) cleanup_fail("cannot perform keyboard sequence");
                 break;
             default: panic("unknown hint type %i", hints->type);
         }
