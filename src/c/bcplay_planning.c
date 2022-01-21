@@ -1,3 +1,6 @@
+#include <string.h>
+
+#include "bcplay_conf.h"
 #include "bcplay_log.h"
 #include "bcplay_random.h"
 
@@ -5,24 +8,24 @@
 
 #define BC_MODULE "planning"
 
-extern enum bc_sm_states _bc_sm_state;
+extern enum bc_planning_states _bc_planning_state;
 
-void bc_sm_init() {
-    _bc_sm_state = BC_STATE_START;
+void bc_planning_init() {
+    _bc_planning_state = BC_STATE_START;
 }
 
-enum bc_sm_states bc_sm_get_state() {
-    return _bc_sm_state;
+enum bc_planning_states bc_planning_get_state() {
+    return _bc_planning_state;
 }
 
-int bc_sm_assess_black(const union bc_perception_detail* detail, struct bc_sm_recommendation* advice);
+int _bc_planning_assess_black(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice);
 
-int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation* advice) {
-    advice->hint.hint = BC_HINT_NOTHING;
+int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
+    memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = bc_random_sample_uniform(5*60, 15*60);
     switch (sight->glimpse) {
         case BC_GLIMPSE_UNKNOWN: return 0;
-        case BC_GLIMPSE_BLACK: return bc_sm_assess_black(&sight->detail, advice);
+        case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
         case BC_GLIMPSE_KIOSK_UPDATED:
             log_warning("'kiosk updated' assessment not implemented");
             return 0;
@@ -33,7 +36,7 @@ int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation*
     panic("unknown glimpse: %d", sight->glimpse);
 }
 
-int bc_sm_assess_black(const union bc_perception_detail* detail, struct bc_sm_recommendation* advice) {
+int _bc_planning_assess_black(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The vnc has just started.
     log_debug("advice: just wait (for the kiosk window)");
     advice->sleep = 2;

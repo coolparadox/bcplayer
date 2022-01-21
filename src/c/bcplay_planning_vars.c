@@ -1,4 +1,4 @@
 #include "bcplay_planning_types.h"
 
-enum bc_sm_states _bc_sm_state;
+enum bc_planning_states _bc_planning_state;
 

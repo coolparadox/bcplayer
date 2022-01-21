@@ -34,14 +34,14 @@ int main(int argc, char** argv) {
     log_notice("player %u: hello", BC_PLAYER_USERID);
 
     // Play!
-    bc_sm_init();
+    bc_planning_init();
     bcplay_kiosk_spawn();
-    while (bc_sm_get_state() != BC_STATE_END) {
+    while (bc_planning_get_state() != BC_STATE_END) {
         log_debug("loop");
         struct bc_canvas_pixmap screenshot; if (bc_screenshot_acquire(&screenshot)) fail("cannot acquire screenshot");
         struct bc_perception sight; if (bc_perceive(&screenshot, &sight)) fail("cannot see the gameplay");
-        struct bc_sm_recommendation advice; if (bc_sm_assess(&sight, &advice)) fail("cannot assess the gameplay");
-        if (bc_perform(&advice.hint)) fail("cannot act on gameplay");
+        struct bc_planning_recommendation advice; if (bc_planning_assess(&sight, &advice)) fail("cannot assess the gameplay");
+        if (bc_perform(advice.hints)) fail("cannot act on gameplay");
         log_debug("sleep: %u", advice.sleep);
         time_t wakeup_time = time(NULL) + advice.sleep;
         do {

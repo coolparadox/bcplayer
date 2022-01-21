@@ -4,10 +4,10 @@
 #include "bcplay_perception_types.h"
 #include "bcplay_planning_types.h"
 
-void bc_sm_init();
+void bc_planning_init();
 
-enum bc_sm_states bc_sm_get_state();
+enum bc_planning_states bc_planning_get_state();
 
-int bc_sm_assess(const struct bc_perception* sight, struct bc_sm_recommendation* advice);
+int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice);
 
 #endif  // BCPLAY_PLANNING_H_SEEN

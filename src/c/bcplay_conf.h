@@ -10,5 +10,6 @@
 #define BC_KIOSK_DISPLAY ":1"
 #define BC_PATH_MAX 0x200
 #define BC_TRACE_DIR "/home/bcplayer1/bctrace"
+#define BC_PLANNING_HINTS_SIZE 0x100
 
 #endif  // BCPLAY_CONF_H_SEEN
