@@ -8,25 +8,22 @@
 
 #define BC_MODULE "screenshot"
 
-#ifdef close_fail
-#undef close_fail
-#endif
-#define close_fail(...) { if (img) XDestroyImage(img); if (display) XCloseDisplay(display); fail(__VA_ARGS__); }
 int bc_screenshot_acquire(struct bc_canvas_pixmap* to) {
     Display* display = NULL;
     XImage* img = NULL;
-    display = XOpenDisplay(NULL); if (!display) close_fail("cannot open display");
+#define cleanup_fail(...) { if (img) XDestroyImage(img); if (display) XCloseDisplay(display); fail(__VA_ARGS__); }
+    display = XOpenDisplay(NULL); if (!display) cleanup_fail("cannot open display");
     Window root = DefaultRootWindow(display);
     XWindowAttributes attr; XGetWindowAttributes(display, root, &attr);
-    if (attr.width != BC_KIOSK_WIDTH) close_fail("unexpected screen width %u", attr.width);
-    if (attr.height != BC_KIOSK_HEIGHT) close_fail("unexpected screen height %u", attr.height);
-    img = XGetImage(display, root, 0, 0, BC_KIOSK_WIDTH, BC_KIOSK_HEIGHT, AllPlanes, ZPixmap); if (!img) close_fail("cannot get screenshot");
+    if (attr.width != BC_KIOSK_WIDTH) cleanup_fail("unexpected screen width %u", attr.width);
+    if (attr.height != BC_KIOSK_HEIGHT) cleanup_fail("unexpected screen height %u", attr.height);
+    img = XGetImage(display, root, 0, 0, BC_KIOSK_WIDTH, BC_KIOSK_HEIGHT, AllPlanes, ZPixmap); if (!img) cleanup_fail("cannot get screenshot");
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
         unsigned long rgb = XGetPixel(img, col, row);
         to->blue[row][col] = rgb % 0x100; rgb /= 0x100;
         to->green[row][col] = rgb % 0x100; rgb /= 0x100;
         to->red[row][col] = rgb % 0x100; rgb /= 0x100;
-        if (rgb) close_fail("unsupported pixel format");
+        if (rgb) cleanup_fail("unsupported pixel format");
     }
     XDestroyImage(img);
     XCloseDisplay(display);

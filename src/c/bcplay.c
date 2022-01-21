@@ -21,12 +21,6 @@ int main(int argc, char** argv) {
         fclose(pid_file);
     }
 
-#ifdef BC_SPINLOCK
-    {
-        volatile int i = 1; while (i);  // Wait for the debugger to attach.
-    }
-#endif  // BC_SPINLOCK
-
     // Setup logging.
     assert(BC_PLAYER_USERID == getuid());
     setlogmask(LOG_UPTO(BC_LOG_LEVEL));
@@ -36,6 +30,9 @@ int main(int argc, char** argv) {
     // Play!
     bc_planning_init();
     bcplay_kiosk_spawn();
+#ifdef BC_SPINLOCK
+    { volatile int i = 1; while (i); }  // Wait for the debugger to attach.
+#endif  // BC_SPINLOCK
     while (bc_planning_get_state() != BC_STATE_END) {
         log_debug("loop");
         struct bc_canvas_pixmap screenshot; if (bc_screenshot_acquire(&screenshot)) fail("cannot acquire screenshot");
