@@ -1,4 +1,4 @@
-override CFLAGS += -lm -lX11
+override CFLAGS += -lm -lX11 -lxdo
 
 all: bcplay
 .PHONY: all

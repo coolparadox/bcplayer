@@ -3,14 +3,15 @@
 
 #include <X11/keysym.h>
 
+#define BC_HINT_KEYSEQ_SIZE 0x40
+
 enum bc_hint_type {
     BC_HINT_END = 0,
     BC_HINT_KEYBOARD_CLICK,
 };
 
 struct bc_hint_keyboark_click {
-    unsigned int symbol;
-    unsigned int modifier;
+    unsigned char key[BC_HINT_KEYSEQ_SIZE];
 };
 
 struct bc_planning_hint {
