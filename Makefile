@@ -82,6 +82,8 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
 	src/ppm/appsite_wrong_network.ppm \
 	src/ppm/kiosk_updated_not_now.ppm \
+	src/ppm/metamask_unlock_mascot.ppm \
+	src/ppm/metamask_unlock_button.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 

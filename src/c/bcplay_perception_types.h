@@ -11,6 +11,7 @@ enum bc_glimpse {
     BC_GLIMPSE_KIOSK_CLEAN,
     BC_GLIMPSE_APPSITE_WRONG_NETWORK,
     BC_GLIMPSE_APPSITE_CONNECT_WALLET,
+    BC_GLIMPSE_METAMASK_UNLOCK,
 };
 
 union bc_perception_detail {
