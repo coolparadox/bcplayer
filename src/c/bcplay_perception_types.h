@@ -9,6 +9,7 @@ enum bc_glimpse {
     BC_GLIMPSE_BLACK,
     BC_GLIMPSE_KIOSK_UPDATED,
     BC_GLIMPSE_KIOSK_CLEAN,
+    BC_GLIMPSE_APPSITE_WRONG_NETWORK,
 };
 
 union bc_perception_detail {

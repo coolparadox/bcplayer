@@ -79,6 +79,7 @@ BCPLAY_LIB_SOURCES = \
 	src/ppm/bcplay_pack_vars.c \
 
 BCPACK_PPM_SOURCES = \
+	src/ppm/appsite_wrong_network.ppm \
 	src/ppm/kiosk_updated_not_now.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
