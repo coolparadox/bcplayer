@@ -65,7 +65,10 @@ int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail*
 
 int _bc_planning_assess_metamask_unlock(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // Metamask awaits for the unlock password.
-    log_warning("metamask unlock: not implemented");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "3hdna3Ut");
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
+    advice->sleep = 10;
     return 0;
 }
 

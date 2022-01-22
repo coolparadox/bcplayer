@@ -21,6 +21,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox connect_wallet;  // "Connect wallet" clickable text
     } appsite_connect_wallet;
+    struct {
+        struct bc_bbox unlock;  // "Unlock" clickable text
+    } metamask_unlock;
 };
 
 struct bc_perception {

@@ -66,6 +66,11 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_unlock;
+        struct bc_bbox* unlock = &sight->detail.metamask_unlock.unlock;
+        unlock->tl.col = frag_col;
+        unlock->tl.row = frag_row;
+        unlock->br.col = frag_col + frag_width - 1;
+        unlock->br.row = frag_row + frag_height - 1;
         cleanup_return(BC_GLIMPSE_METAMASK_UNLOCK, "metamask unlock");
 not_metamask_unlock:
     }

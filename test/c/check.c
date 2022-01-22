@@ -17,10 +17,10 @@ static void test_perceive_metamask_unlock(void** state) {
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_METAMASK_UNLOCK);
-//    assert_int_equal(sight.detail.appsite_connect_wallet.connect_wallet.tl.row, 486);
-//    assert_int_equal(sight.detail.appsite_connect_wallet.connect_wallet.tl.col, 418);
-//    assert_int_equal(sight.detail.appsite_connect_wallet.connect_wallet.br.row, 553);
-//    assert_int_equal(sight.detail.appsite_connect_wallet.connect_wallet.br.col, 588);
+    assert_int_equal(sight.detail.metamask_unlock.unlock.tl.row, 406);
+    assert_int_equal(sight.detail.metamask_unlock.unlock.tl.col, 756);
+    assert_int_equal(sight.detail.metamask_unlock.unlock.br.row, 419);
+    assert_int_equal(sight.detail.metamask_unlock.unlock.br.col, 804);
 }
 
 static void test_perceive_appsite_connect_wallet(void** state) {
