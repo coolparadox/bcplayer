@@ -13,6 +13,9 @@ extern unsigned char bcpack_appsite_wrong_network[];
 extern unsigned char bcpack_appsite_connect_wallet[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
 extern unsigned char bcpack_metamask_unlock_button[];
+extern unsigned char bcpack_metamask_signature_request_origin[];
+extern unsigned char bcpack_metamask_signature_request_sign_button[];
+extern unsigned char bcpack_metamask_signature_request_title[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -52,6 +55,31 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_APPSITE_WRONG_NETWORK, "wrong network");
+    }
+
+    // Metamask, signature request?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_metamask_signature_request_title, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
+        bc_canvas_unpack(bcpack_metamask_signature_request_origin, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
+        bc_canvas_unpack(bcpack_metamask_signature_request_sign_button, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
+        struct bc_bbox* sign = &sight->detail.metamask_signature_request.sign;
+        sign->tl.col = frag_col;
+        sign->tl.row = frag_row;
+        sign->br.col = frag_col + frag_width - 1;
+        sign->br.row = frag_row + frag_height - 1;
+        cleanup_return(BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST, "metamask signature request");
+not_metamask_signature_request:
     }
 
     // Metamask, unlock wallet?

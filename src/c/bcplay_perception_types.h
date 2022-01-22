@@ -12,6 +12,7 @@ enum bc_glimpse {
     BC_GLIMPSE_APPSITE_WRONG_NETWORK,
     BC_GLIMPSE_APPSITE_CONNECT_WALLET,
     BC_GLIMPSE_METAMASK_UNLOCK,
+    BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST,
 };
 
 union bc_perception_detail {
@@ -24,6 +25,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox unlock;  // "Unlock" clickable text
     } metamask_unlock;
+    struct {
+        struct bc_bbox sign;  // "Sign" clickable text
+    } metamask_signature_request;
 };
 
 struct bc_perception {

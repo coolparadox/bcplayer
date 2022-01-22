@@ -84,6 +84,9 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/kiosk_updated_not_now.ppm \
 	src/ppm/metamask_unlock_mascot.ppm \
 	src/ppm/metamask_unlock_button.ppm \
+	src/ppm/metamask_signature_request_origin.ppm \
+	src/ppm/metamask_signature_request_sign_button.ppm \
+	src/ppm/metamask_signature_request_title.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 

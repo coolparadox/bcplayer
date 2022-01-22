@@ -72,6 +72,12 @@ int _bc_planning_assess_metamask_unlock(const union bc_perception_detail* detail
     return 0;
 }
 
+int _bc_planning_assess_metamask_signature_request(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // Metamask awaits for permission to accept game intention to connect to the wallet.
+    log_warning("signature request: not implemented");
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 3600;
@@ -83,6 +89,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_APPSITE_WRONG_NETWORK: return _bc_planning_assess_appsite_wrong_network(&sight->detail, advice);
         case BC_GLIMPSE_APPSITE_CONNECT_WALLET: return _bc_planning_assess_appsite_connect_wallet(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_UNLOCK: return _bc_planning_assess_metamask_unlock(&sight->detail, advice);
+        case BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST: return _bc_planning_assess_metamask_signature_request(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }
