@@ -2,6 +2,7 @@
 
 #include <xdo.h>
 
+#include "bcplay_conf.h"
 #include "bcplay_log.h"
 
 #include "bcplay_perform.h"
@@ -9,12 +10,27 @@
 #define BC_MODULE "perform"
 
 int _bc_perform_keyboard_click(const xdo_t* xdo, const struct bc_hint_keyboark_click* detail) {
-    if (xdo_send_keysequence_window(xdo, CURRENTWINDOW, detail->key, 12000)) fail("cannot send key click");;
+    if (xdo_send_keysequence_window(xdo, CURRENTWINDOW, detail->key, BC_PERFORM_EVENT_DELAY_US)) fail("cannot send key click");;
     return 0;
 }
 
 int _bc_perform_keyboard_sequence(const xdo_t* xdo, const struct bc_hint_keyboark_sequence* detail) {
-    if (xdo_enter_text_window(xdo, CURRENTWINDOW, detail->keys, 12000)) fail("cannot send key sequence");;
+    if (xdo_enter_text_window(xdo, CURRENTWINDOW, detail->keys, BC_PERFORM_EVENT_DELAY_US)) fail("cannot send key sequence");;
+    return 0;
+}
+
+int _bc_perform_mouse_click(const xdo_t* xdo, const struct bc_hint_mouse_click* detail) {
+    if (xdo_move_mouse(xdo, detail->coord.col, detail->coord.row, 0)) fail("cannot move mouse");
+    usleep(BC_PERFORM_EVENT_DELAY_US);
+    if (xdo_mouse_down(xdo, CURRENTWINDOW, 1)) fail("cannot press mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    if (xdo_mouse_up(xdo, CURRENTWINDOW, 1)) fail("cannot release mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    return 0;
+}
+
+int _bc_perform_mouse_move(const xdo_t* xdo, const struct bc_hint_mouse_move* detail) {
+    if (xdo_move_mouse(xdo, detail->coord.col, detail->coord.row, 0)) fail("cannot move mouse");
     return 0;
 }
 
@@ -30,10 +46,15 @@ int bc_perform(const struct bc_planning_hint* hints) {
             case BC_HINT_KEYBOARD_SEQUENCE:
                 if(_bc_perform_keyboard_sequence(xdo, &hints->detail.keyboard_sequence)) cleanup_fail("cannot perform keyboard sequence");
                 break;
+            case BC_HINT_MOUSE_CLICK:
+                if(_bc_perform_mouse_click(xdo, &hints->detail.mouse_click)) cleanup_fail("cannot perform mouse click");
+                break;
+            case BC_HINT_MOUSE_MOVE:
+                if(_bc_perform_mouse_move(xdo, &hints->detail.mouse_move)) cleanup_fail("cannot perform mouse move");
+                break;
             default: panic("unknown hint type %i", hints->type);
         }
-        log_warning("TODO: implement human pauses between events");
-        usleep(10000);
+        usleep(BC_PERFORM_EVENT_DELAY_US);
     } while (hints++->type);
     xdo_free(xdo);
 }

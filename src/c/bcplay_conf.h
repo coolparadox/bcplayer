@@ -11,5 +11,7 @@
 #define BC_PATH_MAX 0x200
 #define BC_TRACE_DIR "/home/bcplayer1/bctrace"
 #define BC_PLANNING_HINTS_SIZE 0x100
+#define BC_PERFORM_EVENT_DELAY_US 100000
+#define BC_PERFORM_MOUSE_CLICK_DELAY_US 500000
 
 #endif  // BCPLAY_CONF_H_SEEN

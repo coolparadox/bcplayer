@@ -47,15 +47,27 @@ int _bc_planning_assess_appsite_wrong_network(const union bc_perception_detail* 
 
 int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // App site awaits user for connecting to the wallet.
-    log_warning("'connect wallet' assessment not implemented");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    {
+        (++hint)->type = BC_HINT_MOUSE_CLICK;
+        const struct bc_bbox* bbox = &detail->appsite_connect_wallet.connect_wallet;
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    }
+    {
+        (++hint)->type = BC_HINT_MOUSE_MOVE;
+        hint->detail.mouse_move.coord.col = 10;
+        hint->detail.mouse_move.coord.row = 10;
+    }
+    advice->sleep = 10;
     return 0;
 }
 
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
-    advice->sleep = 15;
+    advice->sleep = 3600;
     switch (sight->glimpse) {
-        case BC_GLIMPSE_UNKNOWN: return 0;
+        case BC_GLIMPSE_UNKNOWN: advice->sleep = bc_random_sample_uniform(10, 20); return 0;
         case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
         case BC_GLIMPSE_KIOSK_UPDATED: log_warning("'kiosk updated' assessment not implemented"); return 0;
         case BC_GLIMPSE_KIOSK_CLEAN: return _bc_planning_assess_kiosk_clean(&sight->detail, advice);
