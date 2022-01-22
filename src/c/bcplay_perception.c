@@ -25,12 +25,10 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
     {
         unsigned int max = 0;
         for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-            unsigned int r = shot->red[row][col];
-            unsigned int g = shot->green[row][col];
-            unsigned int b = shot->blue[row][col];
-            if (r > max) max = r;
-            if (g > max) max = g;
-            if (b > max) max = b;
+            const struct bc_canvas_rgb* rgb = &shot->rgb[row][col];
+            if (rgb->r > max) max = rgb->r;
+            if (rgb->g > max) max = rgb->g;
+            if (rgb->b > max) max = rgb->b;
         }
         if (max == 0) cleanup_return(BC_GLIMPSE_BLACK, "black");
     }
@@ -39,10 +37,8 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
     {
         unsigned int private_purple_count = 0;
         for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-            unsigned int r = shot->red[row][col];
-            unsigned int g = shot->green[row][col];
-            unsigned int b = shot->blue[row][col];
-            private_purple_count += (r == 0x25 && g == 0x00 && b == 0x3e) || (r == 0x1E && g == 0x00 && b == 0x32);
+            const struct bc_canvas_rgb* rgb = &shot->rgb[row][col];
+            private_purple_count += (rgb->r == 0x25 && rgb->g == 0x00 && rgb->b == 0x3e) || (rgb->r == 0x1E && rgb->g == 0x00 && rgb->b == 0x32);
         }
         if (private_purple_count >= (unsigned int) BC_KIOSK_WIDTH * BC_KIOSK_HEIGHT * 8 / 10) cleanup_return(BC_GLIMPSE_KIOSK_CLEAN, "clean kiosk");
     }

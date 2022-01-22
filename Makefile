@@ -4,7 +4,7 @@ all: bcplay
 .PHONY: all
 
 clean:
-	$(RM) -r bcplay check src/ppm/bcplay_pack_vars.c
+	$(RM) bcpack bcplay check src/ppm/bcplay_pack_vars.c
 .PHONY: clean
 
 tags:

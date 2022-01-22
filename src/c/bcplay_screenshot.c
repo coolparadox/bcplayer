@@ -19,11 +19,12 @@ int bc_screenshot_acquire(struct bc_canvas_pixmap* to) {
     if (attr.height != BC_KIOSK_HEIGHT) cleanup_fail("unexpected screen height %u", attr.height);
     img = XGetImage(display, root, 0, 0, BC_KIOSK_WIDTH, BC_KIOSK_HEIGHT, AllPlanes, ZPixmap); if (!img) cleanup_fail("cannot get screenshot");
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-        unsigned long rgb = XGetPixel(img, col, row);
-        to->blue[row][col] = rgb % 0x100; rgb /= 0x100;
-        to->green[row][col] = rgb % 0x100; rgb /= 0x100;
-        to->red[row][col] = rgb % 0x100; rgb /= 0x100;
-        if (rgb) cleanup_fail("unsupported pixel format");
+        unsigned long triplet = XGetPixel(img, col, row);
+        struct bc_canvas_rgb* rgb = &to->rgb[row][col];
+        rgb->b = triplet % 0x100; triplet /= 0x100;
+        rgb->g = triplet % 0x100; triplet /= 0x100;
+        rgb->r = triplet % 0x100; triplet /= 0x100;
+        if (triplet) cleanup_fail("unsupported pixel format");
     }
     XDestroyImage(img);
     XCloseDisplay(display);

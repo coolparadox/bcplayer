@@ -50,9 +50,8 @@ static void test_perceive_kiosk_updated(void** state) {
 
 static void test_perceive_black(void** state) {
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-        shot->red[row][col] = 0x00;
-        shot->green[row][col] = 0x00;
-        shot->blue[row][col] = 0x00;
+        struct bc_canvas_rgb* rgb = &shot->rgb[row][col];
+        rgb->r = rgb->g = rgb->b = 0x00;
     }
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_BLACK);
@@ -60,9 +59,10 @@ static void test_perceive_black(void** state) {
 
 static void test_perceive_noise(void** state) {
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-        shot->red[row][col] = rand() % 0x100;
-        shot->green[row][col] = rand() % 0x100;
-        shot->blue[row][col] = rand() % 0x100;
+        struct bc_canvas_rgb* rgb = &shot->rgb[row][col];
+        rgb->r = rand() % 0x100;
+        rgb->g = rand() % 0x100;
+        rgb->b = rand() % 0x100;
     }
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_UNKNOWN);

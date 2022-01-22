@@ -26,9 +26,10 @@ int bc_canvas_save(const char* path, const struct bc_canvas_pixmap* from) {
     FILE* file = fopen(path, "w"); if (!file) close_fail("cannot open '%s' for writing: %m", path);
     if (fprintf(file, "P6\n%s\n%u %u\n255\n", "# Produced by bcplay <coolparadox@gmail.com>", BC_KIOSK_WIDTH, BC_KIOSK_HEIGHT) < 0) close_fail("cannot write ppm header to '%s'", path);
     for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-        if (fputc(from->red[row][col], file) < 0) close_fail("cannot write ppm data to '%s'", path);
-        if (fputc(from->green[row][col], file) < 0) close_fail("cannot write ppm data to '%s'", path);
-        if (fputc(from->blue[row][col], file) < 0) close_fail("cannot write ppm data to '%s'", path);
+        const struct bc_canvas_rgb* rgb = &from->rgb[row][col];
+        if (fputc(rgb->r, file) < 0) close_fail("cannot write ppm data to '%s'", path);
+        if (fputc(rgb->g, file) < 0) close_fail("cannot write ppm data to '%s'", path);
+        if (fputc(rgb->b, file) < 0) close_fail("cannot write ppm data to '%s'", path);
     }
     if (fclose(file)) fail("cannot close '%s': %m", path);
     return 0;
@@ -57,9 +58,13 @@ int bc_canvas_load(const char* path, struct bc_canvas_pixmap* to, unsigned int* 
         if (max != 0xFF) close_fail("unsupported ppm max value %d: %s", max, path);
     }
     for (unsigned int row = 0; row < *height; ++row) for (unsigned int col = 0; col < *width; ++col) {
-        if ((to->red[row][col] = fgetc(file)) >= 0x100) close_fail("cannot read ppm data from '%s'", path);
-        if ((to->green[row][col] = fgetc(file)) >= 0x100) close_fail("cannot read ppm data from '%s'", path);
-        if ((to->blue[row][col] = fgetc(file)) >= 0x100) close_fail("cannot read ppm data from '%s'", path);
+        struct bc_canvas_rgb* rgb = &to->rgb[row][col];
+        {
+            int c;
+            if ((c = fgetc(file)) < 0) close_fail("cannot read ppm data from '%s'", path); rgb->r = c;
+            if ((c = fgetc(file)) < 0) close_fail("cannot read ppm data from '%s'", path); rgb->g = c;
+            if ((c = fgetc(file)) < 0) close_fail("cannot read ppm data from '%s'", path); rgb->b = c;
+        }
     }
     if(fclose(file)) fail("cannot close '%s': %m", path);
     return 0;
@@ -98,14 +103,16 @@ void bc_canvas_fragment_map(const struct bc_canvas_pixmap* base, const struct bc
     const unsigned int scan_last_row = BC_KIOSK_HEIGHT - frag_height;
     const unsigned int scan_last_col = BC_KIOSK_WIDTH - frag_width;
     for (unsigned int base_row = 0; base_row < BC_KIOSK_HEIGHT; ++base_row) for (unsigned int base_col = 0; base_col < BC_KIOSK_WIDTH; ++base_col) {
-        if (base_row > scan_last_row || base_col > scan_last_col) { result->gray[base_row][base_col] = UINT_MAX; continue; }
+        if (base_row > scan_last_row || base_col > scan_last_col) { result->gray[base_row][base_col] = UCHAR_MAX; continue; }
         unsigned long long int frag_squared_distance_sum = 0;
         for (unsigned int frag_row = 0; frag_row < frag_height; ++frag_row) for (unsigned int frag_col = 0; frag_col < frag_width; ++frag_col) {
-            int dr = base->red[base_row + frag_row][base_col + frag_col] - frag->red[frag_row][frag_col];
-            int dg = base->green[base_row + frag_row][base_col + frag_col] - frag->green[frag_row][frag_col];
-            int db = base->blue[base_row + frag_row][base_col + frag_col] - frag->blue[frag_row][frag_col];
+            const struct bc_canvas_rgb* base_rgb = &base->rgb[base_row + frag_row][base_col + frag_col];
+            const struct bc_canvas_rgb* frag_rgb = &frag->rgb[frag_row][frag_col];
+            int dr = base_rgb->r - frag_rgb->r;
+            int dg = base_rgb->g - frag_rgb->g;
+            int db = base_rgb->b - frag_rgb->b;
             frag_squared_distance_sum += dr*dr + dg*dg + db*db;
-            if (frag_squared_distance_sum > UINT_MAX) { frag_squared_distance_sum = UINT_MAX ; break; }
+            if (frag_squared_distance_sum > UCHAR_MAX) { frag_squared_distance_sum = UCHAR_MAX ; break; }
         }
         result->gray[base_row][base_col] = frag_squared_distance_sum;
     }
@@ -125,9 +132,10 @@ void bc_canvas_unpack(unsigned char* from, struct bc_canvas_pixmap* to, unsigned
     *height = from[2]; *height *= 0x100; *height += from[3];
     FILE* file = fmemopen(&from[4], 3 * *width * *height, "r");
     for (unsigned int row = 0; row < *height; ++row) for (unsigned int col = 0; col < *width; ++col) {
-        to->red[row][col] = fgetc(file);
-        to->green[row][col] = fgetc(file);
-        to->blue[row][col] = fgetc(file);
+        struct bc_canvas_rgb* rgb = &to->rgb[row][col];
+        rgb->r = fgetc(file);
+        rgb->g = fgetc(file);
+        rgb->b = fgetc(file);
     }
     fclose(file);
 }

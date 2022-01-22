@@ -22,7 +22,8 @@ int main(int argc, char** argv) {
     unsigned int count = 0;
     for (unsigned int row = 0; row < height; ++row) for (unsigned int col = 0; col < width; ++col) {
         if (!(count++ % 5)) printf("\n    ");
-        printf(" 0x%02X, 0x%02X, 0x%02X,", pix->red[row][col], pix->green[row][col], pix->blue[row][col]);
+        struct bc_canvas_rgb* rgb = &pix->rgb[row][col];
+        printf(" 0x%02X, 0x%02X, 0x%02X,", rgb->r, rgb->g, rgb->b);
     }
     printf("\n};\n");
     return 0;

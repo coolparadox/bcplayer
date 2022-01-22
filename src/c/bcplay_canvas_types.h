@@ -13,18 +13,16 @@ struct bc_bbox {
     struct bc_point br;  // bottom right
 };
 
+struct bc_canvas_rgb {
+    unsigned char r, g, b;
+};
+
 struct bc_canvas_pixmap {
-    unsigned int red[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-    unsigned int green[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-    unsigned int blue[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
+    struct bc_canvas_rgb rgb[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
 };
 
 struct bc_canvas_graymap {
-    unsigned int gray[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
-};
-
-struct bc_canvas_bitmap {
-    unsigned int bit[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
+    unsigned char gray[BC_KIOSK_HEIGHT][BC_KIOSK_WIDTH];
 };
 
 #endif  // BCPLAY_CANVAS_TYPES_H_SEEN
