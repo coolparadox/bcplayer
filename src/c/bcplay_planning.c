@@ -45,6 +45,12 @@ int _bc_planning_assess_appsite_wrong_network(const union bc_perception_detail* 
     return 0;
 }
 
+int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // App site awaits user for connecting to the wallet.
+    log_warning("'connect wallet' assessment not implemented");
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 15;
@@ -54,6 +60,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_KIOSK_UPDATED: log_warning("'kiosk updated' assessment not implemented"); return 0;
         case BC_GLIMPSE_KIOSK_CLEAN: return _bc_planning_assess_kiosk_clean(&sight->detail, advice);
         case BC_GLIMPSE_APPSITE_WRONG_NETWORK: return _bc_planning_assess_appsite_wrong_network(&sight->detail, advice);
+        case BC_GLIMPSE_APPSITE_CONNECT_WALLET: return _bc_planning_assess_appsite_connect_wallet(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

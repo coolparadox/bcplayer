@@ -10,6 +10,7 @@
 
 extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_appsite_wrong_network[];
+extern unsigned char bcpack_appsite_connect_wallet[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -20,13 +21,18 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
 #define cleanup_fail(...) { cleanup(); fail(__VA_ARGS__); }
 #define cleanup_return(GLIMPSE, LOG_STR) { cleanup(); log_debug("glimpse: %s", LOG_STR); sight->glimpse = GLIMPSE; return 0; }
 
-    // App site, wrong network?
+    // Full black?
     {
-        unsigned int frag_width, frag_height;
-        bc_canvas_unpack(bcpack_appsite_wrong_network, frag, &frag_width, &frag_height);
-        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
-        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_APPSITE_WRONG_NETWORK, "wrong network");
+        unsigned int max = 0;
+        for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
+            unsigned int r = shot->red[row][col];
+            unsigned int g = shot->green[row][col];
+            unsigned int b = shot->blue[row][col];
+            if (r > max) max = r;
+            if (g > max) max = g;
+            if (b > max) max = b;
+        }
+        if (max == 0) cleanup_return(BC_GLIMPSE_BLACK, "black");
     }
 
     // Clean kiosk?
@@ -39,6 +45,30 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
             private_purple_count += (r == 0x25 && g == 0x00 && b == 0x3e) || (r == 0x1E && g == 0x00 && b == 0x32);
         }
         if (private_purple_count >= (unsigned int) BC_KIOSK_WIDTH * BC_KIOSK_HEIGHT * 8 / 10) cleanup_return(BC_GLIMPSE_KIOSK_CLEAN, "clean kiosk");
+    }
+
+    // App site, wrong network?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_appsite_wrong_network, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_APPSITE_WRONG_NETWORK, "wrong network");
+    }
+
+    // App site, connect wallet?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_appsite_connect_wallet, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.appsite_connect_wallet.connect_wallet.tl.row = frag_row;
+            sight->detail.appsite_connect_wallet.connect_wallet.tl.col = frag_col;
+            sight->detail.appsite_connect_wallet.connect_wallet.br.row = frag_row + frag_height - 1;
+            sight->detail.appsite_connect_wallet.connect_wallet.br.col = frag_col + frag_width - 1;
+            cleanup_return(BC_GLIMPSE_APPSITE_CONNECT_WALLET, "connect wallet");
+        }
     }
 
     // Kiosk recently updated?
@@ -54,20 +84,6 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
             sight->detail.kiosk_updated.not_now.br.col = frag_col + frag_width - 2;
             cleanup_return(BC_GLIMPSE_KIOSK_UPDATED, "updated kiosk");
         }
-    }
-
-    // Full black?
-    {
-        unsigned int max = 0;
-        for (unsigned int row = 0; row < BC_KIOSK_HEIGHT; ++row) for (unsigned int col = 0; col < BC_KIOSK_WIDTH; ++col) {
-            unsigned int r = shot->red[row][col];
-            unsigned int g = shot->green[row][col];
-            unsigned int b = shot->blue[row][col];
-            if (r > max) max = r;
-            if (g > max) max = g;
-            if (b > max) max = b;
-        }
-        if (max == 0) cleanup_return(BC_GLIMPSE_BLACK, "black");
     }
 
     // The screenshot does not reveal anything peculiar.

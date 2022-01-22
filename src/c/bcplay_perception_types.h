@@ -10,12 +10,16 @@ enum bc_glimpse {
     BC_GLIMPSE_KIOSK_UPDATED,
     BC_GLIMPSE_KIOSK_CLEAN,
     BC_GLIMPSE_APPSITE_WRONG_NETWORK,
+    BC_GLIMPSE_APPSITE_CONNECT_WALLET,
 };
 
 union bc_perception_detail {
     struct {
         struct bc_bbox not_now;  // "Not now" clickable text
     } kiosk_updated;
+    struct {
+        struct bc_bbox connect_wallet;  // "Connect wallet" clickable text
+    } appsite_connect_wallet;
 };
 
 struct bc_perception {
