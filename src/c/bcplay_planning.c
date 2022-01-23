@@ -166,9 +166,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
     if (_bc_planning_gameplay_verify) {
         log_debug("advice: let the game play a bit");
         _bc_planning_gameplay_verify = 0;
-        // FIXME: debug
-        // advice->sleep = bc_random_sample_uniform(60 * 5, 60 * 15);
-        advice->sleep = 10;
+        advice->sleep = bc_random_sample_uniform(60 * 5, 60 * 15);
         return 0;
     }
     // The game is playing for quite some time.
@@ -210,29 +208,23 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
 
 int _bc_planning_assess_game_characters(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // Character selection.
-    log_warning("character selection: not implemented");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    if (detail->game_characters.has_full) {
+        log_debug("advice: click button: work");
+        (++hint)->type = BC_HINT_MOUSE_CLICK;
+        const struct bc_bbox* bbox = &detail->game_characters.work;
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+        // FIXME: add some delay here
+    }
+    log_debug("advice: click area: game pause");
+    (++hint)->type = BC_HINT_MOUSE_CLICK;
+    hint->detail.mouse_click.coord.col = bc_random_sample_uniform(276, 685);
+    hint->detail.mouse_click.coord.row = bc_random_sample_uniform(566, 595);
+    advice->sleep = 2;
     return 0;
-//    struct bc_planning_hint* hint = advice->hints - 1;
-//    if (_bc_planning_heroes_select) {
-//        // The pause came from the normal gameplay.
-//        _bc_planning_heroes_select = 0;
-//        log_debug("advice: click button: heroes selection");
-//        (++hint)->type = BC_HINT_MOUSE_CLICK;
-//        const struct bc_bbox* bbox = &detail->game_paused.heroes;
-//        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
-//        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
-//        advice->sleep = 3;
-//        return 0;
-//    }
-//    // The pause came from the character selection screen.
-//    log_debug("advice: click area: resume game play");
-//    _bc_planning_gameplay_verify = 1;
-//    (++hint)->type = BC_HINT_MOUSE_CLICK;
-//    hint->detail.mouse_click.coord.col = bc_random_sample_uniform(40, 920);
-//    hint->detail.mouse_click.coord.row = bc_random_sample_uniform(110, 480);
-//    advice->sleep = 2;
-//    return 0;
 }
+
 int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     log_debug("advice: refresh url");
     // The game shows the selection of games.
