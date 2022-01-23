@@ -12,6 +12,24 @@
 
 struct bc_canvas_pixmap* shot = NULL;
 
+static void test_perceive_game_paused(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_paused.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_PAUSED);
+    assert_int_equal(sight.detail.game_paused.heroes.tl.row, 576);
+    assert_int_equal(sight.detail.game_paused.heroes.tl.col, 446);
+    assert_int_equal(sight.detail.game_paused.heroes.br.row, 592);
+    assert_int_equal(sight.detail.game_paused.heroes.br.col, 515);
+}
+
+static void test_perceive_game_ongoing(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_ongoing.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_ONGOING);
+}
+
 static void test_perceive_game_selection(void** state) {
     unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_selection.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
@@ -131,6 +149,8 @@ int main(void) {
     openlog(NULL, LOG_PERROR, LOG_LOCAL0);
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_perceive_game_paused),
+        cmocka_unit_test(test_perceive_game_ongoing),
         cmocka_unit_test(test_perceive_game_selection),
         cmocka_unit_test(test_perceive_socket_error),
         cmocka_unit_test(test_perceive_game_kiosk_scrolled),

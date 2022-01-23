@@ -8,18 +8,20 @@
 
 #define BC_MODULE "perception"
 
-extern unsigned char bcpack_kiosk_updated_not_now[];
-extern unsigned char bcpack_appsite_wrong_network[];
 extern unsigned char bcpack_appsite_connect_wallet[];
-extern unsigned char bcpack_metamask_unlock_mascot[];
+extern unsigned char bcpack_appsite_wrong_network[];
+extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_metamask_unlock_button[];
+extern unsigned char bcpack_metamask_unlock_mascot[];
 extern unsigned char bcpack_metamask_signature_request_origin[];
 extern unsigned char bcpack_metamask_signature_request_sign_button[];
 extern unsigned char bcpack_metamask_signature_request_title[];
-extern unsigned char bcpack_game_kiosk_title[];
+extern unsigned char bcpack_game_exit[];
 extern unsigned char bcpack_game_kiosk_fullscreen[];
-extern unsigned char bcpack_socket_error[];
+extern unsigned char bcpack_game_kiosk_title[];
+extern unsigned char bcpack_game_paused_heroes[];
 extern unsigned char bcpack_game_selection_treasure_hunt[];
+extern unsigned char bcpack_socket_error[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -156,6 +158,28 @@ not_game_in_kiosk:
         sight->detail.game_selection.treasure_hunt.br.col = frag_col + frag_width - 1;
         cleanup_return(BC_GLIMPSE_GAME_SELECTION, "game selection");
 not_game_selection:
+    }
+
+    // In game?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_game_exit, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_in_game;
+        bc_canvas_unpack(bcpack_game_paused_heroes, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+        sight->detail.game_paused.heroes.tl.row = frag_row;
+        sight->detail.game_paused.heroes.tl.col = frag_col;
+        sight->detail.game_paused.heroes.br.row = frag_row + frag_height - 1;
+        sight->detail.game_paused.heroes.br.col = frag_col + frag_width - 1;
+            cleanup_return(BC_GLIMPSE_GAME_PAUSED, "game paused");
+        }
+        cleanup_return(BC_GLIMPSE_GAME_ONGOING, "game ongoing");
+not_in_game:
     }
 
     // Kiosk recently updated?

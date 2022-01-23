@@ -17,6 +17,8 @@ enum bc_glimpse {
     BC_GLIMPSE_GAME_KIOSK_SCROLLED,
     BC_GLIMPSE_SOCKET_ERROR,
     BC_GLIMPSE_GAME_SELECTION,
+    BC_GLIMPSE_GAME_ONGOING,
+    BC_GLIMPSE_GAME_PAUSED,
 };
 
 union bc_perception_detail {
@@ -38,6 +40,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox treasure_hunt;  // "treasure hunt" clickable text
     } game_selection;
+    struct {
+        struct bc_bbox heroes;  // "heroes" clickable text
+    } game_paused;
 };
 
 struct bc_perception {

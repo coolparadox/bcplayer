@@ -145,11 +145,23 @@ int _bc_planning_assess_game_selection(const union bc_perception_detail* detail,
     return 0;
 }
 
+int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game shows the selection of games.
+    log_warning("game ongoing: not implemented");
+    return 0;
+}
+
+int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game shows the selection of games.
+    log_warning("game paused: not implemented");
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
-    // FIXME: reverto to small sample unknown waiting time
-    //advice->sleep = bc_random_sample_uniform(10, 20);
-    advice->sleep = 3600;
+    // FIXME: revert to small sample unknown waiting time
+    advice->sleep = bc_random_sample_uniform(10, 20);
+    //advice->sleep = 3600;
     switch (sight->glimpse) {
         case BC_GLIMPSE_UNKNOWN: return 0;
         case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
@@ -163,6 +175,8 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_GAME_KIOSK_SCROLLED: return _bc_planning_assess_game_kiosk_scrolled(&sight->detail, advice);
         case BC_GLIMPSE_SOCKET_ERROR: return _bc_planning_assess_socket_error(&sight->detail, advice);
         case BC_GLIMPSE_GAME_SELECTION: return _bc_planning_assess_game_selection(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_ONGOING: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_PAUSED: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

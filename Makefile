@@ -81,8 +81,10 @@ BCPLAY_LIB_SOURCES = \
 BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
 	src/ppm/appsite_wrong_network.ppm \
+	src/ppm/game_exit.ppm \
 	src/ppm/game_kiosk_fullscreen.ppm \
 	src/ppm/game_kiosk_title.ppm \
+	src/ppm/game_paused_heroes.ppm \
 	src/ppm/game_selection_treasure_hunt.ppm \
 	src/ppm/kiosk_updated_not_now.ppm \
 	src/ppm/metamask_unlock_button.ppm \
