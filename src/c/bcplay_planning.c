@@ -74,7 +74,19 @@ int _bc_planning_assess_metamask_unlock(const union bc_perception_detail* detail
 
 int _bc_planning_assess_metamask_signature_request(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // Metamask awaits for permission to accept game intention to connect to the wallet.
-    log_warning("signature request: not implemented");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    {
+        (++hint)->type = BC_HINT_MOUSE_CLICK;
+        const struct bc_bbox* bbox = &detail->metamask_signature_request.sign;
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    }
+    {
+        (++hint)->type = BC_HINT_MOUSE_MOVE;
+        hint->detail.mouse_move.coord.col = 10;
+        hint->detail.mouse_move.coord.row = 10;
+    }
+    advice->sleep = 60;
     return 0;
 }
 
