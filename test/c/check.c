@@ -113,6 +113,7 @@ int main(void) {
     openlog(NULL, LOG_PERROR, LOG_LOCAL0);
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
+        // FIXME: socket error
         cmocka_unit_test(test_perceive_game_kiosk_scrolled),
         cmocka_unit_test(test_perceive_game_kiosk_unscrolled),
         cmocka_unit_test(test_perceive_metamask_signature_request),

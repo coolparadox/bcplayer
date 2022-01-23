@@ -13,6 +13,7 @@ enum bc_hint_type {
     BC_HINT_KEYBOARD_SEQUENCE,
     BC_HINT_MOUSE_CLICK,
     BC_HINT_MOUSE_MOVE,
+    BC_HINT_MOUSE_DRAG,
 };
 
 struct bc_hint_keyboark_click {
@@ -31,6 +32,11 @@ struct bc_hint_mouse_move {
     struct bc_point coord;  // Location to rest mouse pointer
 };
 
+struct bc_hint_mouse_drag {
+    struct bc_point from;
+    struct bc_point to;
+};
+
 struct bc_planning_hint {
     enum bc_hint_type type;
     union {
@@ -38,6 +44,7 @@ struct bc_planning_hint {
         struct bc_hint_keyboark_sequence keyboard_sequence;
         struct bc_hint_mouse_click mouse_click;
         struct bc_hint_mouse_move mouse_move;
+        struct bc_hint_mouse_drag mouse_drag;
     } detail;
 };
 

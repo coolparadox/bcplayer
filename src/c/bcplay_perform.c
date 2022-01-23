@@ -34,6 +34,18 @@ int _bc_perform_mouse_move(const xdo_t* xdo, const struct bc_hint_mouse_move* de
     return 0;
 }
 
+int _bc_perform_mouse_drag(const xdo_t* xdo, const struct bc_hint_mouse_drag* detail) {
+    if (xdo_move_mouse(xdo, detail->from.col, detail->from.row, 0)) fail("cannot move mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    if (xdo_mouse_down(xdo, CURRENTWINDOW, 1)) fail("cannot press mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    if (xdo_move_mouse(xdo, detail->to.col, detail->to.row, 0)) fail("cannot move mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    if (xdo_mouse_up(xdo, CURRENTWINDOW, 1)) fail("cannot release mouse");
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    return 0;
+}
+
 int bc_perform(const struct bc_planning_hint* hints) {
     xdo_t* xdo = xdo_new(NULL); if (!xdo) fail("xdo: cannot instantiate");
 #define cleanup_fail(...) { xdo_free(xdo); fail(__VA_ARGS__); }
@@ -41,16 +53,19 @@ int bc_perform(const struct bc_planning_hint* hints) {
         switch (hints->type) {
             case 0: break;
             case BC_HINT_KEYBOARD_CLICK:
-                if(_bc_perform_keyboard_click(xdo, &hints->detail.keyboard_click)) cleanup_fail("cannot perform keyboard click");
+                if(_bc_perform_keyboard_click(xdo, &hints->detail.keyboard_click)) cleanup_fail("cannot click keyboard");
                 break;
             case BC_HINT_KEYBOARD_SEQUENCE:
-                if(_bc_perform_keyboard_sequence(xdo, &hints->detail.keyboard_sequence)) cleanup_fail("cannot perform keyboard sequence");
+                if(_bc_perform_keyboard_sequence(xdo, &hints->detail.keyboard_sequence)) cleanup_fail("cannot type keyboard");
                 break;
             case BC_HINT_MOUSE_CLICK:
-                if(_bc_perform_mouse_click(xdo, &hints->detail.mouse_click)) cleanup_fail("cannot perform mouse click");
+                if(_bc_perform_mouse_click(xdo, &hints->detail.mouse_click)) cleanup_fail("cannot click mouse");
                 break;
             case BC_HINT_MOUSE_MOVE:
-                if(_bc_perform_mouse_move(xdo, &hints->detail.mouse_move)) cleanup_fail("cannot perform mouse move");
+                if(_bc_perform_mouse_move(xdo, &hints->detail.mouse_move)) cleanup_fail("cannot move mouse");
+                break;
+            case BC_HINT_MOUSE_DRAG:
+                if(_bc_perform_mouse_drag(xdo, &hints->detail.mouse_drag)) cleanup_fail("cannot drag mouse");
                 break;
             default: panic("unknown hint type %i", hints->type);
         }
