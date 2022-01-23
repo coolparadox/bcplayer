@@ -11,6 +11,9 @@
 extern unsigned char bcpack_appsite_connect_wallet[];
 extern unsigned char bcpack_appsite_wrong_network[];
 extern unsigned char bcpack_automatic_exit_label[];
+extern unsigned char bcpack_game_characters_full_selected[];
+extern unsigned char bcpack_game_characters_full_unselected[];
+extern unsigned char bcpack_game_characters_title[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
@@ -159,6 +162,41 @@ not_game_in_kiosk:
         sight->detail.game_selection.treasure_hunt.br.col = frag_col + frag_width - 1;
         cleanup_return(BC_GLIMPSE_GAME_SELECTION, "game selection");
 not_game_selection:
+    }
+
+    // Character selection?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_game_characters_title, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_character_selection;
+        sight->detail.game_characters.has_full = 0;
+        bc_canvas_unpack(bcpack_game_characters_full_unselected, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.game_characters.has_full = 1;
+            sight->detail.game_characters.work.tl.row = frag_row + 2;
+            sight->detail.game_characters.work.tl.col = frag_col + 119 + 2;
+            sight->detail.game_characters.work.br.row = frag_row + frag_height - 3;
+            sight->detail.game_characters.work.br.col = frag_col + frag_width - 3;
+            cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
+        }
+        bc_canvas_unpack(bcpack_game_characters_full_selected, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.game_characters.has_full = 1;
+            sight->detail.game_characters.work.tl.row = frag_row + 2;
+            sight->detail.game_characters.work.tl.col = frag_col + 119 + 2;
+            sight->detail.game_characters.work.br.row = frag_row + frag_height - 3;
+            sight->detail.game_characters.work.br.col = frag_col + frag_width - 3;
+            cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
+        }
+        cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, no full energy hero");
+not_character_selection:
     }
 
     // In game?

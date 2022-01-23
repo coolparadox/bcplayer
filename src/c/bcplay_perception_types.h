@@ -20,6 +20,7 @@ enum bc_glimpse {
     BC_GLIMPSE_GAME_ONGOING,
     BC_GLIMPSE_GAME_PAUSED,
     BC_GLIMPSE_AUTOMATIC_EXIT,
+    BC_GLIMPSE_GAME_CHARACTERS,
 };
 
 union bc_perception_detail {
@@ -44,6 +45,10 @@ union bc_perception_detail {
     struct {
         struct bc_bbox heroes;  // "heroes" clickable text
     } game_paused;
+    struct {
+        int has_full;  // has a full energy character?
+        struct bc_bbox work;  // "work" clickable text if has_full
+    } game_characters;
 };
 
 struct bc_perception {

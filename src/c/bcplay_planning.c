@@ -177,8 +177,8 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
     struct bc_planning_hint* hint = advice->hints - 1;
     {
         (++hint)->type = BC_HINT_MOUSE_CLICK;
-        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(273, 686);
-        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(480, 599);
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(467, 493);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(568, 599);
     }
     advice->sleep = 2;
     return 0;
@@ -208,6 +208,31 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
     return 0;
 }
 
+int _bc_planning_assess_game_characters(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // Character selection.
+    log_warning("character selection: not implemented");
+    return 0;
+//    struct bc_planning_hint* hint = advice->hints - 1;
+//    if (_bc_planning_heroes_select) {
+//        // The pause came from the normal gameplay.
+//        _bc_planning_heroes_select = 0;
+//        log_debug("advice: click button: heroes selection");
+//        (++hint)->type = BC_HINT_MOUSE_CLICK;
+//        const struct bc_bbox* bbox = &detail->game_paused.heroes;
+//        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+//        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+//        advice->sleep = 3;
+//        return 0;
+//    }
+//    // The pause came from the character selection screen.
+//    log_debug("advice: click area: resume game play");
+//    _bc_planning_gameplay_verify = 1;
+//    (++hint)->type = BC_HINT_MOUSE_CLICK;
+//    hint->detail.mouse_click.coord.col = bc_random_sample_uniform(40, 920);
+//    hint->detail.mouse_click.coord.row = bc_random_sample_uniform(110, 480);
+//    advice->sleep = 2;
+//    return 0;
+}
 int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     log_debug("advice: refresh url");
     // The game shows the selection of games.
@@ -238,6 +263,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_GAME_ONGOING: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
         case BC_GLIMPSE_GAME_PAUSED: return _bc_planning_assess_game_paused(&sight->detail, advice);
         case BC_GLIMPSE_AUTOMATIC_EXIT: return _bc_planning_assess_automatic_exit(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_CHARACTERS: return _bc_planning_assess_game_characters(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }
