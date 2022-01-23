@@ -13,6 +13,8 @@ enum bc_glimpse {
     BC_GLIMPSE_APPSITE_CONNECT_WALLET,
     BC_GLIMPSE_METAMASK_UNLOCK,
     BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST,
+    BC_GLIMPSE_GAME_KIOSK_UNSCROLLED,
+    BC_GLIMPSE_GAME_KIOSK_SCROLLED,
 };
 
 union bc_perception_detail {
@@ -28,6 +30,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox sign;  // "Sign" clickable text
     } metamask_signature_request;
+    struct {
+        struct bc_bbox fullscreen;  // Fullscreen button
+    } game_kiosk_scrolled;
 };
 
 struct bc_perception {

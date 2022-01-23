@@ -16,6 +16,8 @@ extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_signature_request_origin[];
 extern unsigned char bcpack_metamask_signature_request_sign_button[];
 extern unsigned char bcpack_metamask_signature_request_title[];
+extern unsigned char bcpack_game_kiosk_title[];
+extern unsigned char bcpack_game_kiosk_fullscreen[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -101,6 +103,27 @@ not_metamask_signature_request:
         unlock->br.row = frag_row + frag_height - 1;
         cleanup_return(BC_GLIMPSE_METAMASK_UNLOCK, "metamask unlock");
 not_metamask_unlock:
+    }
+
+    // Game in kiosk?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_game_kiosk_title, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_game_in_kiosk;
+        bc_canvas_unpack(bcpack_game_kiosk_fullscreen, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) cleanup_return(BC_GLIMPSE_GAME_KIOSK_UNSCROLLED, "game in kiosk, unscrolled");
+        struct bc_bbox* unlock = &sight->detail.game_kiosk_scrolled.fullscreen;
+        unlock->tl.col = frag_col;
+        unlock->tl.row = frag_row;
+        unlock->br.col = frag_col + frag_width - 1;
+        unlock->br.row = frag_row + frag_height - 1;
+        cleanup_return(BC_GLIMPSE_GAME_KIOSK_SCROLLED, "game in kiosk, scrolled");
+not_game_in_kiosk:
     }
 
     // App site, connect wallet?

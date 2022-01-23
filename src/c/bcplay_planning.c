@@ -90,6 +90,18 @@ int _bc_planning_assess_metamask_signature_request(const union bc_perception_det
     return 0;
 }
 
+int _bc_planning_assess_game_kiosk_unscrolled(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game is inside the kiosk and the fullscreen button is not visible.
+    log_warning("game kiosk unscrolled: not implemented");
+    return 0;
+}
+
+int _bc_planning_assess_game_kiosk_scrolled(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game is inside the kiosk and the fullscreen button is visible.
+    log_warning("game kiosk unscrolled: not implemented");
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 3600;
@@ -102,6 +114,8 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_APPSITE_CONNECT_WALLET: return _bc_planning_assess_appsite_connect_wallet(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_UNLOCK: return _bc_planning_assess_metamask_unlock(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST: return _bc_planning_assess_metamask_signature_request(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_KIOSK_UNSCROLLED: return _bc_planning_assess_game_kiosk_unscrolled(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_KIOSK_SCROLLED: return _bc_planning_assess_game_kiosk_scrolled(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }
