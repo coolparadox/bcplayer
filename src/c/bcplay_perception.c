@@ -10,6 +10,7 @@
 
 extern unsigned char bcpack_appsite_connect_wallet[];
 extern unsigned char bcpack_appsite_wrong_network[];
+extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
@@ -205,6 +206,16 @@ not_in_game:
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_SOCKET_ERROR, "socket error");
+    }
+
+    // Automatic exit?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_automatic_exit_label, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_AUTOMATIC_EXIT, "automatic exit");
     }
 
     // The screenshot does not reveal anything peculiar.

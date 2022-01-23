@@ -81,6 +81,7 @@ BCPLAY_LIB_SOURCES = \
 BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
 	src/ppm/appsite_wrong_network.ppm \
+	src/ppm/automatic_exit_label.ppm \
 	src/ppm/game_exit.ppm \
 	src/ppm/game_kiosk_fullscreen.ppm \
 	src/ppm/game_kiosk_title.ppm \

@@ -157,6 +157,14 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
     return 0;
 }
 
+int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game shows the selection of games.
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
+    advice->sleep = 10;
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     // FIXME: revert to small sample unknown waiting time
@@ -177,6 +185,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_GAME_SELECTION: return _bc_planning_assess_game_selection(&sight->detail, advice);
         case BC_GLIMPSE_GAME_ONGOING: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
         case BC_GLIMPSE_GAME_PAUSED: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
+        case BC_GLIMPSE_AUTOMATIC_EXIT: return _bc_planning_assess_automatic_exit(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }
