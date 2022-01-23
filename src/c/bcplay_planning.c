@@ -32,7 +32,7 @@ int _bc_planning_assess_kiosk_clean(const union bc_perception_detail* detail, st
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "ctrl+l");
     (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "app.bombcrypto.io");
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
-    advice->sleep = 10;
+    advice->sleep = 5;
     return 0;
 }
 
@@ -86,7 +86,7 @@ int _bc_planning_assess_metamask_signature_request(const union bc_perception_det
         hint->detail.mouse_move.coord.col = 10;
         hint->detail.mouse_move.coord.row = 10;
     }
-    advice->sleep = 10;
+    advice->sleep = 5;
     return 0;
 }
 
@@ -98,16 +98,16 @@ int _bc_planning_assess_game_kiosk_unscrolled(const union bc_perception_detail* 
         hint->detail.mouse_drag.from.col = 952;
         hint->detail.mouse_drag.from.row = 22;
         hint->detail.mouse_drag.to.col = 952;
-        hint->detail.mouse_drag.to.row = 170;
+        hint->detail.mouse_drag.to.row = BC_KIOSK_HEIGHT / 2;
     }
     {
         (++hint)->type = BC_HINT_MOUSE_DRAG;
         hint->detail.mouse_drag.from.col = 6;
         hint->detail.mouse_drag.from.row = 573;
-        hint->detail.mouse_drag.to.col = 265;
+        hint->detail.mouse_drag.to.col = BC_KIOSK_WIDTH / 32;
         hint->detail.mouse_drag.to.row = 573;
     }
-    advice->sleep = 5;
+    advice->sleep = 0;
     return 0;
 }
 
@@ -120,7 +120,15 @@ int _bc_planning_assess_game_kiosk_scrolled(const union bc_perception_detail* de
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
     }
-    advice->sleep = 5;
+    advice->sleep = 0;
+    return 0;
+}
+
+int _bc_planning_assess_socket_error(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // Seeing the dreadful 'socket error' message.
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
+    advice->sleep = 30;
     return 0;
 }
 
@@ -140,6 +148,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST: return _bc_planning_assess_metamask_signature_request(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_UNSCROLLED: return _bc_planning_assess_game_kiosk_unscrolled(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_SCROLLED: return _bc_planning_assess_game_kiosk_scrolled(&sight->detail, advice);
+        case BC_GLIMPSE_SOCKET_ERROR: return _bc_planning_assess_socket_error(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

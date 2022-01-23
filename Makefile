@@ -89,6 +89,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/metamask_signature_request_title.ppm \
 	src/ppm/game_kiosk_title.ppm \
 	src/ppm/game_kiosk_fullscreen.ppm \
+	src/ppm/socket_error.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 

@@ -18,6 +18,7 @@ extern unsigned char bcpack_metamask_signature_request_sign_button[];
 extern unsigned char bcpack_metamask_signature_request_title[];
 extern unsigned char bcpack_game_kiosk_title[];
 extern unsigned char bcpack_game_kiosk_fullscreen[];
+extern unsigned char bcpack_socket_error[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -154,6 +155,16 @@ not_game_in_kiosk:
             sight->detail.kiosk_updated.not_now.br.col = frag_col + frag_width - 2;
             cleanup_return(BC_GLIMPSE_KIOSK_UPDATED, "updated kiosk");
         }
+    }
+
+    // Socket error?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_socket_error, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_SOCKET_ERROR, "socket error");
     }
 
     // The screenshot does not reveal anything peculiar.
