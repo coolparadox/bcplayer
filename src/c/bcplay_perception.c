@@ -19,6 +19,7 @@ extern unsigned char bcpack_metamask_signature_request_title[];
 extern unsigned char bcpack_game_kiosk_title[];
 extern unsigned char bcpack_game_kiosk_fullscreen[];
 extern unsigned char bcpack_socket_error[];
+extern unsigned char bcpack_game_selection_treasure_hunt[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -140,6 +141,21 @@ not_game_in_kiosk:
             sight->detail.appsite_connect_wallet.connect_wallet.br.col = frag_col + frag_width - 1;
             cleanup_return(BC_GLIMPSE_APPSITE_CONNECT_WALLET, "connect wallet");
         }
+    }
+
+    // Game selection?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_game_selection_treasure_hunt, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row < 0 || frag_col < 0) goto not_game_selection;
+        sight->detail.game_selection.treasure_hunt.tl.row = frag_row;
+        sight->detail.game_selection.treasure_hunt.tl.col = frag_col;
+        sight->detail.game_selection.treasure_hunt.br.row = frag_row + frag_height - 1;
+        sight->detail.game_selection.treasure_hunt.br.col = frag_col + frag_width - 1;
+        cleanup_return(BC_GLIMPSE_GAME_SELECTION, "game selection");
+not_game_selection:
     }
 
     // Kiosk recently updated?

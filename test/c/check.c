@@ -12,6 +12,17 @@
 
 struct bc_canvas_pixmap* shot = NULL;
 
+static void test_perceive_game_selection(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_selection.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_SELECTION);
+    assert_int_equal(sight.detail.game_selection.treasure_hunt.tl.row, 415);
+    assert_int_equal(sight.detail.game_selection.treasure_hunt.tl.col, 390);
+    assert_int_equal(sight.detail.game_selection.treasure_hunt.br.row, 433);
+    assert_int_equal(sight.detail.game_selection.treasure_hunt.br.col, 591);
+}
+
 static void test_perceive_socket_error(void** state) {
     unsigned int width, height; assert_false(bc_canvas_load("test/samples/socket_error.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
@@ -120,6 +131,7 @@ int main(void) {
     openlog(NULL, LOG_PERROR, LOG_LOCAL0);
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_perceive_game_selection),
         cmocka_unit_test(test_perceive_socket_error),
         cmocka_unit_test(test_perceive_game_kiosk_scrolled),
         cmocka_unit_test(test_perceive_game_kiosk_unscrolled),

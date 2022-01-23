@@ -16,6 +16,7 @@ enum bc_glimpse {
     BC_GLIMPSE_GAME_KIOSK_UNSCROLLED,
     BC_GLIMPSE_GAME_KIOSK_SCROLLED,
     BC_GLIMPSE_SOCKET_ERROR,
+    BC_GLIMPSE_GAME_SELECTION,
 };
 
 union bc_perception_detail {
@@ -34,6 +35,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox fullscreen;  // Fullscreen button
     } game_kiosk_scrolled;
+    struct {
+        struct bc_bbox treasure_hunt;  // "treasure hunt" clickable text
+    } game_selection;
 };
 
 struct bc_perception {
