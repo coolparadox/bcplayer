@@ -181,6 +181,7 @@ int main(void) {
     openlog(NULL, LOG_PERROR, LOG_LOCAL0);
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
+        // FIXME: stuck at game loading
         cmocka_unit_test(test_perceive_error_other),
         cmocka_unit_test(test_perceive_characters_no_full),
         cmocka_unit_test(test_perceive_characters_full_unselected),

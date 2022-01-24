@@ -9,13 +9,32 @@
 #define BC_MODULE "planning"
 
 extern enum bc_planning_states _bc_planning_state;
-extern int _bc_planning_heroes_select;
+
+extern int _bc_planning_error_wait;
+extern int _bc_planning_error_wait_prev;
+extern int _bc_planning_unknown_wait;
+extern int _bc_planning_unknown_wait_prev;
 extern int _bc_planning_gameplay_verify;
+extern int _bc_planning_heroes_select;
+extern int _bc_planning_had_full;
+
+void _bc_planning_reset_error_wait() {
+    _bc_planning_error_wait = 1;
+    _bc_planning_error_wait_prev = 0;
+}
+
+void _bc_planning_reset_unknown_wait() {
+    _bc_planning_unknown_wait = 1;
+    _bc_planning_unknown_wait_prev = 0;
+}
 
 void bc_planning_init() {
     _bc_planning_state = BC_STATE_START;
     _bc_planning_heroes_select = 0;
     _bc_planning_gameplay_verify = 0;
+    _bc_planning_had_full = 0;
+    _bc_planning_reset_error_wait();
+    _bc_planning_reset_unknown_wait();
 }
 
 enum bc_planning_states bc_planning_get_state() {
@@ -148,7 +167,12 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
     if (_bc_planning_gameplay_verify) {
         log_debug("advice: let the game play a bit");
         _bc_planning_gameplay_verify = 0;
-        advice->sleep = bc_random_sample_uniform(60 * 20, 60 * 30);
+        if (_bc_planning_had_full) {
+            _bc_planning_had_full = 0;
+            advice->sleep = 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
+            return 0;
+        }
+        advice->sleep = bc_random_sample_uniform(60 * 2, 60 * 8);
         return 0;
     }
     // The game is playing for quite some time.
@@ -192,6 +216,7 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
     // Character selection.
     struct bc_planning_hint* hint = advice->hints - 1;
     if (detail->game_characters.has_full) {
+        _bc_planning_had_full = 1;
         log_debug("advice: click button: work");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_characters.work;
@@ -218,18 +243,38 @@ int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail,
 
 int _bc_planning_assess_error_other(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // A game error occurred.
-    log_debug("advice: refresh url");
+    log_debug("advice: refresh url and wait some time");
     struct bc_planning_hint* hint = advice->hints - 1;
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
-    advice->sleep = 10;
+    advice->sleep = _bc_planning_error_wait;
+    _bc_planning_error_wait += _bc_planning_error_wait_prev;
+    _bc_planning_error_wait_prev = advice->sleep;
+    return 0;
+}
+
+int _bc_planning_assess_unknown(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // Sight not recognized.
+    log_debug("advice: wait some time");
+    advice->sleep = _bc_planning_unknown_wait;
+    _bc_planning_unknown_wait += _bc_planning_unknown_wait_prev;
+    _bc_planning_unknown_wait_prev = advice->sleep;
+    if (advice->sleep > 60 * 4) {
+        log_warning("emergency parachute deployed");
+        _bc_planning_reset_unknown_wait();
+        struct bc_planning_hint* hint = advice->hints - 1;
+        (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
+        advice->sleep = _bc_planning_unknown_wait;
+    }
     return 0;
 }
 
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
-    advice->sleep = bc_random_sample_uniform(10, 20);
+    advice->sleep = 60 * 60;
+    if (sight->glimpse != BC_GLIMPSE_ERROR_OTHER) _bc_planning_reset_error_wait();
+    if (sight->glimpse != BC_GLIMPSE_UNKNOWN) _bc_planning_reset_unknown_wait();
     switch (sight->glimpse) {
-        case BC_GLIMPSE_UNKNOWN: return 0;
+        case BC_GLIMPSE_UNKNOWN: return _bc_planning_assess_unknown(&sight->detail, advice);
         case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
         case BC_GLIMPSE_KIOSK_UPDATED: log_warning("'kiosk updated' assessment not implemented"); return 0;
         case BC_GLIMPSE_KIOSK_CLEAN: return _bc_planning_assess_kiosk_clean(&sight->detail, advice);
