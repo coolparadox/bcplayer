@@ -84,6 +84,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/game_characters_full_selected.ppm \
 	src/ppm/game_characters_full_unselected.ppm \
 	src/ppm/game_characters_title.ppm \
+	src/ppm/game_error_title.ppm \
 	src/ppm/game_exit.ppm \
 	src/ppm/game_kiosk_fullscreen.ppm \
 	src/ppm/game_kiosk_title.ppm \

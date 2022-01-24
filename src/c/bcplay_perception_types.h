@@ -19,6 +19,7 @@ enum bc_glimpse {
     BC_GLIMPSE_GAME_PAUSED,
     BC_GLIMPSE_AUTOMATIC_EXIT,
     BC_GLIMPSE_GAME_CHARACTERS,
+    BC_GLIMPSE_ERROR_OTHER,
 };
 
 union bc_perception_detail {

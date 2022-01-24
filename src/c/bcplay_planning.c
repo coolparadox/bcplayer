@@ -208,8 +208,17 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
 }
 
 int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
-    log_debug("advice: refresh url");
     // The game shows the selection of games.
+    log_debug("advice: refresh url");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
+    advice->sleep = 10;
+    return 0;
+}
+
+int _bc_planning_assess_error_other(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // A game error occurred.
+    log_debug("advice: refresh url");
     struct bc_planning_hint* hint = advice->hints - 1;
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
     advice->sleep = 10;
@@ -234,6 +243,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_GAME_PAUSED: return _bc_planning_assess_game_paused(&sight->detail, advice);
         case BC_GLIMPSE_AUTOMATIC_EXIT: return _bc_planning_assess_automatic_exit(&sight->detail, advice);
         case BC_GLIMPSE_GAME_CHARACTERS: return _bc_planning_assess_game_characters(&sight->detail, advice);
+        case BC_GLIMPSE_ERROR_OTHER: return _bc_planning_assess_error_other(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

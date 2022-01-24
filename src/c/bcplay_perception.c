@@ -13,6 +13,7 @@ extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_game_characters_full_selected[];
 extern unsigned char bcpack_game_characters_full_unselected[];
 extern unsigned char bcpack_game_characters_title[];
+extern unsigned char bcpack_game_error_title[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
@@ -100,6 +101,25 @@ not_metamask_signature_request:
         unlock->br.row = frag_row + frag_height - 1;
         cleanup_return(BC_GLIMPSE_METAMASK_UNLOCK, "metamask unlock");
 not_metamask_unlock:
+    }
+
+    // Automatic exit error?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_automatic_exit_label, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_AUTOMATIC_EXIT, "automatic exit");
+    }
+
+    // Other type of error?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_game_error_title, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
     }
 
     // Game in kiosk?
@@ -223,16 +243,6 @@ not_in_game:
             sight->detail.kiosk_updated.not_now.br.col = frag_col + frag_width - 2;
             cleanup_return(BC_GLIMPSE_KIOSK_UPDATED, "updated kiosk");
         }
-    }
-
-    // Automatic exit?
-    {
-        unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
-        bc_canvas_unpack(bcpack_automatic_exit_label, frag, &frag_width, &frag_height);
-        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
-        if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_AUTOMATIC_EXIT, "automatic exit");
     }
 
     // The screenshot does not reveal anything peculiar.
