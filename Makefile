@@ -80,7 +80,6 @@ BCPLAY_LIB_SOURCES = \
 
 BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
-	src/ppm/appsite_wrong_network.ppm \
 	src/ppm/automatic_exit_label.ppm \
 	src/ppm/game_characters_full_selected.ppm \
 	src/ppm/game_characters_full_unselected.ppm \
@@ -96,7 +95,6 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/metamask_signature_request_origin.ppm \
 	src/ppm/metamask_signature_request_sign_button.ppm \
 	src/ppm/metamask_signature_request_title.ppm \
-	src/ppm/socket_error.ppm \
 
 BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 

@@ -40,15 +40,6 @@ int _bc_planning_assess_kiosk_clean(const union bc_perception_detail* detail, st
     return 0;
 }
 
-int _bc_planning_assess_appsite_wrong_network(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
-    // App site reports wrong network.
-    log_debug("advice: refresh url");
-    struct bc_planning_hint* hint = advice->hints - 1;
-    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
-    advice->sleep = 10;
-    return 0;
-}
-
 int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // App site awaits user for connecting to the wallet.
     log_debug("advice: click button: connect wallet");
@@ -138,15 +129,6 @@ int _bc_planning_assess_game_kiosk_scrolled(const union bc_perception_detail* de
     return 0;
 }
 
-int _bc_planning_assess_socket_error(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
-    // Seeing the dreadful 'socket error' message.
-    log_debug("advice: refresh url");
-    struct bc_planning_hint* hint = advice->hints - 1;
-    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
-    advice->sleep = 30;
-    return 0;
-}
-
 int _bc_planning_assess_game_selection(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The game shows the selection of games.
     log_debug("advice: click: treasure hunt");
@@ -166,7 +148,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
     if (_bc_planning_gameplay_verify) {
         log_debug("advice: let the game play a bit");
         _bc_planning_gameplay_verify = 0;
-        advice->sleep = bc_random_sample_uniform(60 * 5, 60 * 15);
+        advice->sleep = bc_random_sample_uniform(60 * 20, 60 * 30);
         return 0;
     }
     // The game is playing for quite some time.
@@ -236,21 +218,17 @@ int _bc_planning_assess_automatic_exit(const union bc_perception_detail* detail,
 
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
-    // FIXME: revert to small sample unknown waiting time
     advice->sleep = bc_random_sample_uniform(10, 20);
-    //advice->sleep = 3600;
     switch (sight->glimpse) {
         case BC_GLIMPSE_UNKNOWN: return 0;
         case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
         case BC_GLIMPSE_KIOSK_UPDATED: log_warning("'kiosk updated' assessment not implemented"); return 0;
         case BC_GLIMPSE_KIOSK_CLEAN: return _bc_planning_assess_kiosk_clean(&sight->detail, advice);
-        case BC_GLIMPSE_APPSITE_WRONG_NETWORK: return _bc_planning_assess_appsite_wrong_network(&sight->detail, advice);
         case BC_GLIMPSE_APPSITE_CONNECT_WALLET: return _bc_planning_assess_appsite_connect_wallet(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_UNLOCK: return _bc_planning_assess_metamask_unlock(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST: return _bc_planning_assess_metamask_signature_request(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_UNSCROLLED: return _bc_planning_assess_game_kiosk_unscrolled(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_SCROLLED: return _bc_planning_assess_game_kiosk_scrolled(&sight->detail, advice);
-        case BC_GLIMPSE_SOCKET_ERROR: return _bc_planning_assess_socket_error(&sight->detail, advice);
         case BC_GLIMPSE_GAME_SELECTION: return _bc_planning_assess_game_selection(&sight->detail, advice);
         case BC_GLIMPSE_GAME_ONGOING: return _bc_planning_assess_game_ongoing(&sight->detail, advice);
         case BC_GLIMPSE_GAME_PAUSED: return _bc_planning_assess_game_paused(&sight->detail, advice);

@@ -9,7 +9,6 @@
 #define BC_MODULE "perception"
 
 extern unsigned char bcpack_appsite_connect_wallet[];
-extern unsigned char bcpack_appsite_wrong_network[];
 extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_game_characters_full_selected[];
 extern unsigned char bcpack_game_characters_full_unselected[];
@@ -25,7 +24,6 @@ extern unsigned char bcpack_game_kiosk_fullscreen[];
 extern unsigned char bcpack_game_kiosk_title[];
 extern unsigned char bcpack_game_paused_heroes[];
 extern unsigned char bcpack_game_selection_treasure_hunt[];
-extern unsigned char bcpack_socket_error[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -56,15 +54,6 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
             private_purple_count += (rgb->r == 0x25 && rgb->g == 0x00 && rgb->b == 0x3e) || (rgb->r == 0x1E && rgb->g == 0x00 && rgb->b == 0x32);
         }
         if (private_purple_count >= (unsigned int) BC_KIOSK_WIDTH * BC_KIOSK_HEIGHT * 8 / 10) cleanup_return(BC_GLIMPSE_KIOSK_CLEAN, "clean kiosk");
-    }
-
-    // App site, wrong network?
-    {
-        unsigned int frag_width, frag_height;
-        bc_canvas_unpack(bcpack_appsite_wrong_network, frag, &frag_width, &frag_height);
-        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
-        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_APPSITE_WRONG_NETWORK, "wrong network");
     }
 
     // Metamask, signature request?
@@ -234,16 +223,6 @@ not_in_game:
             sight->detail.kiosk_updated.not_now.br.col = frag_col + frag_width - 2;
             cleanup_return(BC_GLIMPSE_KIOSK_UPDATED, "updated kiosk");
         }
-    }
-
-    // Socket error?
-    {
-        unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
-        bc_canvas_unpack(bcpack_socket_error, frag, &frag_width, &frag_height);
-        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
-        if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_SOCKET_ERROR, "socket error");
     }
 
     // Automatic exit?

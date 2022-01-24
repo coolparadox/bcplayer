@@ -45,7 +45,7 @@ static void test_perceive_characters_full_selected(void** state) {
 }
 
 static void test_perceive_automatic_exit(void** state) {
-    unsigned int width, height; assert_false(bc_canvas_load("test/samples/automatic_exit.ppm", shot, &width, &height));
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/error_automatic_exit.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_AUTOMATIC_EXIT);
@@ -78,13 +78,6 @@ static void test_perceive_game_selection(void** state) {
     assert_int_equal(sight.detail.game_selection.treasure_hunt.tl.col, 390);
     assert_int_equal(sight.detail.game_selection.treasure_hunt.br.row, 433);
     assert_int_equal(sight.detail.game_selection.treasure_hunt.br.col, 591);
-}
-
-static void test_perceive_socket_error(void** state) {
-    unsigned int width, height; assert_false(bc_canvas_load("test/samples/socket_error.ppm", shot, &width, &height));
-    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
-    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
-    assert_int_equal(sight.glimpse, BC_GLIMPSE_SOCKET_ERROR);
 }
 
 static void test_perceive_game_kiosk_scrolled(void** state) {
@@ -138,13 +131,6 @@ static void test_perceive_appsite_connect_wallet(void** state) {
     assert_int_equal(sight.detail.appsite_connect_wallet.connect_wallet.br.col, 588);
 }
 
-static void test_perceive_appsite_wrong_network(void** state) {
-    unsigned int width, height; assert_false(bc_canvas_load("test/samples/appsite_wrong_network.ppm", shot, &width, &height));
-    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
-    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
-    assert_int_equal(sight.glimpse, BC_GLIMPSE_APPSITE_WRONG_NETWORK);
-}
-
 static void test_perceive_kiosk_clean(void** state) {
     unsigned int width, height; assert_false(bc_canvas_load("test/samples/kiosk_clean.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
@@ -195,13 +181,11 @@ int main(void) {
         cmocka_unit_test(test_perceive_game_paused),
         cmocka_unit_test(test_perceive_game_ongoing),
         cmocka_unit_test(test_perceive_game_selection),
-        cmocka_unit_test(test_perceive_socket_error),
         cmocka_unit_test(test_perceive_game_kiosk_scrolled),
         cmocka_unit_test(test_perceive_game_kiosk_unscrolled),
         cmocka_unit_test(test_perceive_metamask_signature_request),
         cmocka_unit_test(test_perceive_metamask_unlock),
         cmocka_unit_test(test_perceive_appsite_connect_wallet),
-        cmocka_unit_test(test_perceive_appsite_wrong_network),
         cmocka_unit_test(test_perceive_kiosk_clean),
         cmocka_unit_test(test_perceive_kiosk_updated),
         cmocka_unit_test(test_perceive_black),
