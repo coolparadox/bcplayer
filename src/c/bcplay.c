@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
         struct bc_perception sight; if (bc_perceive(&screenshot, &sight)) fail("cannot see the gameplay");
         struct bc_planning_recommendation advice; if (bc_planning_assess(&sight, &advice)) fail("cannot assess the gameplay");
         if (bc_perform(advice.hints)) fail("cannot act on gameplay");
-        log_debug("sleep: %u", advice.sleep);
         time_t wakeup_time = time(NULL) + advice.sleep;
+        log_debug("sleeping for %02u:%02u until %s", advice.sleep / 60, advice.sleep % 60, ctime(&wakeup_time));
         do {
             sleep(1);
             int is_kiosk_alive; if (bcplay_kiosk_is_alive(&is_kiosk_alive)) fail("cannot tell whether kiosk is alive");
