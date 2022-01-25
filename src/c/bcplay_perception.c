@@ -60,7 +60,7 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
     // Metamask, signature request?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_metamask_signature_request_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
@@ -85,7 +85,7 @@ not_metamask_signature_request:
     // Metamask, unlock wallet?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_metamask_unlock_mascot, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
@@ -106,7 +106,7 @@ not_metamask_unlock:
     // Automatic exit error?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_automatic_exit_label, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
@@ -125,7 +125,7 @@ not_metamask_unlock:
     // Game in kiosk?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_game_kiosk_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
@@ -176,7 +176,7 @@ not_game_selection:
     // Character selection?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_game_characters_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
@@ -211,7 +211,7 @@ not_character_selection:
     // In game?
     {
         unsigned int frag_width, frag_height;
-        int frag_row, frag_col;
+        int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_game_exit, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
