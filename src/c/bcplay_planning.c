@@ -158,7 +158,7 @@ int _bc_planning_assess_game_selection(const union bc_perception_detail* detail,
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
     }
-    advice->sleep = 5;
+    advice->sleep = 2;
     return 0;
 }
 
@@ -184,7 +184,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(467, 493);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(568, 599);
     }
-    advice->sleep = 2;
+    advice->sleep = 1;
     return 0;
 }
 
@@ -199,7 +199,7 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
         const struct bc_bbox* bbox = &detail->game_paused.heroes;
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
-        advice->sleep = 3;
+        advice->sleep = 2;
         return 0;
     }
     // The pause came from the character selection screen.
@@ -208,7 +208,7 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(40, 920);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(110, 480);
-    advice->sleep = 2;
+    advice->sleep = 1;
     return 0;
 }
 
@@ -228,7 +228,7 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(276, 685);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(566, 595);
-    advice->sleep = 2;
+    advice->sleep = 1;
     return 0;
 }
 
