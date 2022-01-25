@@ -21,7 +21,7 @@ start: /home/bcplayer1/bcplay /home/bcplayer1/.Xauthority /home/bcplayer1/xstart
 
 watch:
 	vncviewer -Shared=0 -ViewOnly :1 &
-	sudo tail -f /var/log/messages | sed -r -e '/ bcplay\[/!d' -e 's/.* bcplay\[[^ ]* //'
+	sudo tail -n1000 -f /var/log/messages | sed -r -e '/ bcplay\[/!d' -e 's/.* bcplay\[[^ ]* //'
 .PHONY: watch
 .SILENT: watch
 
