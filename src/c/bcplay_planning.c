@@ -1,3 +1,4 @@
+#include <time.h>
 #include <string.h>
 
 #include "bcplay_conf.h"
@@ -16,9 +17,7 @@ extern int _bc_planning_error_wait;
 extern int _bc_planning_error_wait_prev;
 extern int _bc_planning_unknown_wait;
 extern int _bc_planning_unknown_wait_prev;
-extern int _bc_planning_gameplay_verify;
-extern int _bc_planning_heroes_select;
-extern int _bc_planning_had_full;
+extern time_t _pc_planning_next_character_selection;
 extern int _bc_planning_characters_scroll_count;
 
 void _bc_planning_reset_characters_scroll_count() {
@@ -42,9 +41,7 @@ void _bc_planning_reset_unknown_wait() {
 
 void bc_planning_init() {
     _bc_planning_state = BC_STATE_START;
-    _bc_planning_heroes_select = 0;
-    _bc_planning_gameplay_verify = 0;
-    _bc_planning_had_full = 0;
+    _pc_planning_next_character_selection = time(NULL);
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
     _bc_planning_reset_characters_scroll_count();
@@ -177,20 +174,13 @@ int _bc_planning_assess_game_selection(const union bc_perception_detail* detail,
 
 int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The game is playing righ after selecting new heroes.
-    if (_bc_planning_gameplay_verify) {
-        log_debug("advice: let the game play a bit");
-        _bc_planning_gameplay_verify = 0;
-        if (_bc_planning_had_full) {
-            _bc_planning_had_full = 0;
-            advice->sleep = 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
-            return 0;
-        }
-        advice->sleep = bc_random_sample_uniform(60 * 2, 60 * 8);
+    time_t now = time(NULL);
+    if (now < _pc_planning_next_character_selection) {
+        log_debug("character selection time not yet reached: %s", ctime(&_pc_planning_next_character_selection));
+        advice->sleep = bc_random_sample_uniform(60 * 1, 60 * 2);
         return 0;
     }
-    // The game is playing for quite some time.
     log_debug("advice: click area: pause game");
-    _bc_planning_heroes_select = 1;
     struct bc_planning_hint* hint = advice->hints - 1;
     {
         (++hint)->type = BC_HINT_MOUSE_CLICK;
@@ -204,9 +194,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
 int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The game is paused.
     struct bc_planning_hint* hint = advice->hints - 1;
-    if (_bc_planning_heroes_select) {
-        // The pause came from the normal gameplay.
-        _bc_planning_heroes_select = 0;
+    if (time(NULL) >= _pc_planning_next_character_selection) {
         log_debug("advice: click button: heroes selection");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_paused.heroes;
@@ -217,7 +205,6 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
     }
     // The pause came from the character selection screen.
     log_debug("advice: click area: resume game play");
-    _bc_planning_gameplay_verify = 1;
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(40, 920);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(110, 480);
@@ -227,9 +214,11 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
 
 int _bc_planning_assess_game_characters(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // Character selection.
+    time_t now = time(NULL);
     struct bc_planning_hint* hint = advice->hints - 1;
+    _pc_planning_next_character_selection = now + bc_random_sample_uniform(60*4, 60*6);
     if (detail->game_characters.has_full) {
-        _bc_planning_had_full = 1;
+        _pc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
         log_debug("advice: click button: work");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_characters.work;

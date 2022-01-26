@@ -16,7 +16,7 @@
 /*
  * Wish list
  * - support a wait perform action (eg, after enabling a character)
- * - keep watching the ongoing game so errors can be early acted upon
+ * - pause the player at runtime so one can act manually in the game
  * - watch the gameplay remotely
  * - know beforehand how much to wait until the next full bar
  * - perceive the energy level of each character
