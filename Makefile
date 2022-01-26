@@ -91,6 +91,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/game_paused_heroes.ppm \
 	src/ppm/game_selection_treasure_hunt.ppm \
 	src/ppm/kiosk_updated_not_now.ppm \
+	src/ppm/loading.ppm \
 	src/ppm/metamask_unlock_button.ppm \
 	src/ppm/metamask_unlock_mascot.ppm \
 	src/ppm/metamask_signature_request_origin.ppm \

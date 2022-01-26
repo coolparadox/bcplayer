@@ -15,6 +15,7 @@ extern unsigned char bcpack_game_characters_full_unselected[];
 extern unsigned char bcpack_game_characters_title[];
 extern unsigned char bcpack_game_error_title[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
+extern unsigned char bcpack_loading[];
 extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
 extern unsigned char bcpack_metamask_signature_request_origin[];
@@ -228,6 +229,15 @@ not_character_selection:
         }
         cleanup_return(BC_GLIMPSE_GAME_ONGOING, "game ongoing");
 not_in_game:
+    }
+
+    // Game loading?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_loading, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_LOADING, "game loading");
     }
 
     // Kiosk recently updated?

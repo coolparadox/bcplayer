@@ -10,6 +10,8 @@
 
 extern enum bc_planning_states _bc_planning_state;
 
+extern int _bc_planning_loading_wait;
+extern int _bc_planning_loading_wait_prev;
 extern int _bc_planning_error_wait;
 extern int _bc_planning_error_wait_prev;
 extern int _bc_planning_unknown_wait;
@@ -21,6 +23,11 @@ extern int _bc_planning_characters_scroll_count;
 
 void _bc_planning_reset_characters_scroll_count() {
     _bc_planning_characters_scroll_count = 0;
+}
+
+void _bc_planning_reset_loading_wait() {
+    _bc_planning_loading_wait = 1;
+    _bc_planning_loading_wait_prev = 0;
 }
 
 void _bc_planning_reset_error_wait() {
@@ -286,9 +293,27 @@ int _bc_planning_assess_unknown(const union bc_perception_detail* detail, struct
     return 0;
 }
 
+int _bc_planning_assess_loading(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game is loading.
+    advice->sleep = _bc_planning_loading_wait;
+    _bc_planning_loading_wait += _bc_planning_loading_wait_prev;
+    _bc_planning_loading_wait_prev = advice->sleep;
+    if (advice->sleep > 60 * 2) {
+        log_debug("advice: refresh url");
+        _bc_planning_reset_loading_wait();
+        struct bc_planning_hint* hint = advice->hints - 1;
+        (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
+        advice->sleep = _bc_planning_loading_wait;
+        return 0;
+    }
+    log_debug("advice: wait some time");
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 60 * 60;
+    if (sight->glimpse != BC_GLIMPSE_LOADING) _bc_planning_reset_loading_wait();
     if (sight->glimpse != BC_GLIMPSE_ERROR_OTHER) _bc_planning_reset_error_wait();
     if (sight->glimpse != BC_GLIMPSE_UNKNOWN) _bc_planning_reset_unknown_wait();
     if (sight->glimpse != BC_GLIMPSE_GAME_CHARACTERS) _bc_planning_reset_characters_scroll_count();
@@ -308,6 +333,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_AUTOMATIC_EXIT: return _bc_planning_assess_automatic_exit(&sight->detail, advice);
         case BC_GLIMPSE_GAME_CHARACTERS: return _bc_planning_assess_game_characters(&sight->detail, advice);
         case BC_GLIMPSE_ERROR_OTHER: return _bc_planning_assess_error_other(&sight->detail, advice);
+        case BC_GLIMPSE_LOADING: return _bc_planning_assess_loading(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }
