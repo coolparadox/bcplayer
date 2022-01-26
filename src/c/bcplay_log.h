@@ -18,6 +18,7 @@
 
 #define log_debug(...) do { if (BC_DEBUG) log(LOG_DEBUG, "debug: " BC_MODULE ": " __VA_ARGS__); } while (0)
 #define log_notice(...) log(LOG_NOTICE, "notice: " BC_MODULE ": " __VA_ARGS__)
+#define log_info(...) log(LOG_INFO, "notice: " BC_MODULE ": " __VA_ARGS__)
 #define log_warning(...) log(LOG_WARNING, "warning: " BC_MODULE ": " __VA_ARGS__)
 #define log_err(...) log(LOG_ERR, "error: " BC_MODULE ": " __VA_ARGS__)
 #define log_panic(...) log(LOG_CRIT, "panic: " BC_MODULE ": " __VA_ARGS__)

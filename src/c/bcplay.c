@@ -15,9 +15,8 @@
 
 /*
  * Wish list
- * - support a wait perform action (eg, after enabling a character)
- * - pause the player at runtime so one can act manually in the game
  * - watch the gameplay remotely
+ * - support a wait perform action (eg, after enabling a character)
  * - know beforehand how much to wait until the next full bar
  * - perceive the energy level of each character
  * - perceive chests and their energy
@@ -46,10 +45,19 @@ int main(int argc, char** argv) {
 #endif  // BC_SPINLOCK
     while (bc_planning_get_state() != BC_STATE_END) {
         log_debug("loop");
+        struct bc_planning_recommendation advice;
+        FILE* pause_file = fopen("/home/bcplayer1/bcplay.pause", "r");
+        if (pause_file) {
+            fclose(pause_file);
+            log_info("pause file detected: bypassing actions");
+            advice.sleep = 60;
+            goto pause_bypass;
+        }
         struct bc_canvas_pixmap screenshot; if (bc_screenshot_acquire(&screenshot)) fail("cannot acquire screenshot");
         struct bc_perception sight; if (bc_perceive(&screenshot, &sight)) fail("cannot see the gameplay");
-        struct bc_planning_recommendation advice; if (bc_planning_assess(&sight, &advice)) fail("cannot assess the gameplay");
+        if (bc_planning_assess(&sight, &advice)) fail("cannot assess the gameplay");
         if (bc_perform(advice.hints)) fail("cannot act on gameplay");
+pause_bypass:
         time_t wakeup_time = time(NULL) + advice.sleep;
         log_debug("sleeping for %02u:%02u until %s", advice.sleep / 60, advice.sleep % 60, ctime(&wakeup_time));
         do {

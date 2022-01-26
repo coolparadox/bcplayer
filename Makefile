@@ -144,3 +144,10 @@ shot:
 .PHONY: shot
 .SILENT: shot
 
+pause:
+	sudo -iu bcplayer1 touch /home/bcplayer1/bcplay.pause
+.PHONY: pause
+
+unpause:
+	sudo -iu bcplayer1 $(RM) /home/bcplayer1/bcplay.pause
+.PHONY: unpause
