@@ -8,4 +8,5 @@ int _bc_planning_unknown_wait_prev;
 int _bc_planning_gameplay_verify;
 int _bc_planning_heroes_select;
 int _bc_planning_had_full;
+int _bc_planning_characters_scroll_count;
 

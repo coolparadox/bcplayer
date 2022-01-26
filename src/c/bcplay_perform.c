@@ -36,11 +36,17 @@ int _bc_perform_mouse_move(const xdo_t* xdo, const struct bc_hint_mouse_move* de
 
 int _bc_perform_mouse_drag(const xdo_t* xdo, const struct bc_hint_mouse_drag* detail) {
     if (xdo_move_mouse(xdo, detail->from.col, detail->from.row, 0)) fail("cannot move mouse");
-    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    usleep(BC_PERFORM_EVENT_DELAY_US);
     if (xdo_mouse_down(xdo, CURRENTWINDOW, 1)) fail("cannot press mouse");
     usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    int dcol = detail->to.col; dcol -= detail->from.col; dcol /= BC_MOUSE_DRAG_STEPS;
+    int drow = detail->to.row; drow -= detail->from.row; drow /= BC_MOUSE_DRAG_STEPS;
+    for (unsigned int step = 1; step < BC_MOUSE_DRAG_STEPS; step++) {
+        if (xdo_move_mouse_relative(xdo, dcol, drow)) fail("cannot relative move mouse");
+        usleep(BC_PERFORM_EVENT_DELAY_US);
+    }
     if (xdo_move_mouse(xdo, detail->to.col, detail->to.row, 0)) fail("cannot move mouse");
-    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
+    usleep(BC_PERFORM_EVENT_DELAY_US);
     if (xdo_mouse_up(xdo, CURRENTWINDOW, 1)) fail("cannot release mouse");
     usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
     return 0;

@@ -17,6 +17,11 @@ extern int _bc_planning_unknown_wait_prev;
 extern int _bc_planning_gameplay_verify;
 extern int _bc_planning_heroes_select;
 extern int _bc_planning_had_full;
+extern int _bc_planning_characters_scroll_count;
+
+void _bc_planning_reset_characters_scroll_count() {
+    _bc_planning_characters_scroll_count = 0;
+}
 
 void _bc_planning_reset_error_wait() {
     _bc_planning_error_wait = 1;
@@ -35,6 +40,7 @@ void bc_planning_init() {
     _bc_planning_had_full = 0;
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
+    _bc_planning_reset_characters_scroll_count();
 }
 
 enum bc_planning_states bc_planning_get_state() {
@@ -184,7 +190,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(467, 493);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(568, 599);
     }
-    advice->sleep = 1;
+    advice->sleep = 0;
     return 0;
 }
 
@@ -208,7 +214,7 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(40, 920);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(110, 480);
-    advice->sleep = 1;
+    advice->sleep = 0;
     return 0;
 }
 
@@ -223,7 +229,19 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
         // FIXME: add some delay here
+        goto _bc_planning_assess_game_characters_leave;
     }
+    if (++_bc_planning_characters_scroll_count <= 3) {
+        log_debug("advice: scroll characters list");
+        (++hint)->type = BC_HINT_MOUSE_DRAG;
+        hint->detail.mouse_drag.from.col = bc_random_sample_uniform(76, 361);
+        hint->detail.mouse_drag.from.row = bc_random_sample_uniform(468, 514);
+        hint->detail.mouse_drag.to.col = bc_random_sample_uniform(76, 361);
+        hint->detail.mouse_drag.to.row = bc_random_sample_uniform(180, 224);
+        advice->sleep = 0;
+        return 0;
+    }
+_bc_planning_assess_game_characters_leave:
     log_debug("advice: click area: game pause");
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(276, 685);
@@ -273,6 +291,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
     advice->sleep = 60 * 60;
     if (sight->glimpse != BC_GLIMPSE_ERROR_OTHER) _bc_planning_reset_error_wait();
     if (sight->glimpse != BC_GLIMPSE_UNKNOWN) _bc_planning_reset_unknown_wait();
+    if (sight->glimpse != BC_GLIMPSE_GAME_CHARACTERS) _bc_planning_reset_characters_scroll_count();
     switch (sight->glimpse) {
         case BC_GLIMPSE_UNKNOWN: return _bc_planning_assess_unknown(&sight->detail, advice);
         case BC_GLIMPSE_BLACK: return _bc_planning_assess_black(&sight->detail, advice);
