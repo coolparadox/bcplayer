@@ -216,9 +216,8 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
     // Character selection.
     time_t now = time(NULL);
     struct bc_planning_hint* hint = advice->hints - 1;
-    _pc_planning_next_character_selection = now + bc_random_sample_uniform(60*4, 60*6);
+    _pc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
     if (detail->game_characters.has_full) {
-        _pc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
         log_debug("advice: click button: work");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_characters.work;
