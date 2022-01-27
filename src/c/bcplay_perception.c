@@ -11,7 +11,6 @@
 extern unsigned char bcpack_appsite_connect_wallet[];
 extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_game_characters_full_selected1[];
-extern unsigned char bcpack_game_characters_full_selected2[];
 extern unsigned char bcpack_game_characters_full_unselected[];
 extern unsigned char bcpack_game_characters_title[];
 extern unsigned char bcpack_game_error_title[];
@@ -65,15 +64,15 @@ int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight
         int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_metamask_signature_request_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
         bc_canvas_unpack(bcpack_metamask_signature_request_origin, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
         bc_canvas_unpack(bcpack_metamask_signature_request_sign_button, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_signature_request;
         struct bc_bbox* sign = &sight->detail.metamask_signature_request.sign;
         sign->tl.col = frag_col;
@@ -90,11 +89,11 @@ not_metamask_signature_request:
         int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_metamask_unlock_mascot, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_unlock;
         bc_canvas_unpack(bcpack_metamask_unlock_button, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_metamask_unlock;
         struct bc_bbox* unlock = &sight->detail.metamask_unlock.unlock;
         unlock->tl.col = frag_col;
@@ -111,7 +110,7 @@ not_metamask_unlock:
         int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_automatic_exit_label, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 || frag_col >= 0) cleanup_return(BC_GLIMPSE_AUTOMATIC_EXIT, "automatic exit");
     }
 
@@ -120,7 +119,7 @@ not_metamask_unlock:
         unsigned int frag_width, frag_height;
         bc_canvas_unpack(bcpack_game_error_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        int frag_row = -1; int frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
     }
 
@@ -130,11 +129,11 @@ not_metamask_unlock:
         int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_game_kiosk_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_game_in_kiosk;
         bc_canvas_unpack(bcpack_game_kiosk_fullscreen, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) cleanup_return(BC_GLIMPSE_GAME_KIOSK_UNSCROLLED, "game in kiosk, unscrolled");
         struct bc_bbox* unlock = &sight->detail.game_kiosk_scrolled.fullscreen;
         unlock->tl.col = frag_col;
@@ -178,45 +177,38 @@ not_game_selection:
     // Character selection?
     {
         unsigned int frag_width, frag_height;
-        int frag_row = -1, frag_col = -1;
+        int frag_row, frag_col;
+
         bc_canvas_unpack(bcpack_game_characters_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_character_selection;
         sight->detail.game_characters.has_full = 0;
+
         bc_canvas_unpack(bcpack_game_characters_full_unselected, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
             sight->detail.game_characters.has_full = 1;
-            sight->detail.game_characters.work.tl.row = frag_row + 4;
-            sight->detail.game_characters.work.tl.col = frag_col + 85;
-            sight->detail.game_characters.work.br.row = frag_row + 29;
-            sight->detail.game_characters.work.br.col = frag_col + 130;
+            sight->detail.game_characters.work.tl.row = frag_row - 14; // 348 334 362, -14 14
+            sight->detail.game_characters.work.tl.col = frag_col + 119; // 257 375 423, 118 166
+            sight->detail.game_characters.work.br.row = frag_row + 11;
+            sight->detail.game_characters.work.br.col = frag_col + 164;
             cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
         }
+
         bc_canvas_unpack(bcpack_game_characters_full_selected1, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
             sight->detail.game_characters.has_full = 1;
-            sight->detail.game_characters.work.tl.row = frag_row + 4;
-            sight->detail.game_characters.work.tl.col = frag_col + 85;
-            sight->detail.game_characters.work.br.row = frag_row + 29;
-            sight->detail.game_characters.work.br.col = frag_col + 130;
+            sight->detail.game_characters.work.tl.row = frag_row - 14; // 348 334 362, -14 14
+            sight->detail.game_characters.work.tl.col = frag_col + 119; // 257 375 423, 118 166
+            sight->detail.game_characters.work.br.row = frag_row + 11;
+            sight->detail.game_characters.work.br.col = frag_col + 164;
             cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
         }
-        bc_canvas_unpack(bcpack_game_characters_full_selected2, frag, &frag_width, &frag_height);
-        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
-        if (frag_row >= 0 && frag_col >= 0) {
-            sight->detail.game_characters.has_full = 1;
-            sight->detail.game_characters.work.tl.row = frag_row + 4;
-            sight->detail.game_characters.work.tl.col = frag_col + 85;
-            sight->detail.game_characters.work.br.row = frag_row + 29;
-            sight->detail.game_characters.work.br.col = frag_col + 130;
-            cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
-        }
+
         cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, no full energy hero");
 not_character_selection:
     }
@@ -227,11 +219,11 @@ not_character_selection:
         int frag_row = -1, frag_col = -1;
         bc_canvas_unpack(bcpack_game_exit, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_in_game;
         bc_canvas_unpack(bcpack_game_paused_heroes, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
         sight->detail.game_paused.heroes.tl.row = frag_row;
         sight->detail.game_paused.heroes.tl.col = frag_col;

@@ -233,7 +233,7 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
         hint->detail.mouse_drag.from.row = bc_random_sample_uniform(468, 514);
         hint->detail.mouse_drag.to.col = bc_random_sample_uniform(76, 361);
         hint->detail.mouse_drag.to.row = bc_random_sample_uniform(180, 224);
-        advice->sleep = 0;
+        advice->sleep = 5;
         return 0;
     }
 _bc_planning_assess_game_characters_leave:

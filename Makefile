@@ -14,6 +14,7 @@ tags:
 .PHONY: tags
 
 start: /home/bcplayer1/bcplay /home/bcplayer1/.Xauthority /home/bcplayer1/xstartup
+	$(MAKE) unpause
 	sudo -iu bcplayer1 mkdir -p ~bcplayer1/bctrace
 	sudo -iu bcplayer1 vncserver :1 -geometry 960x600 -autokill -xstartup ~bcplayer1/xstartup -SecurityTypes None -AcceptSetDesktopSize=0
 .PHONY: start
@@ -82,7 +83,6 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
 	src/ppm/automatic_exit_label.ppm \
 	src/ppm/game_characters_full_selected1.ppm \
-	src/ppm/game_characters_full_selected2.ppm \
 	src/ppm/game_characters_full_unselected.ppm \
 	src/ppm/game_characters_title.ppm \
 	src/ppm/game_error_title.ppm \
