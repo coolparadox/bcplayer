@@ -40,22 +40,34 @@ static void test_perceive_characters_full_unselected(void** state) {
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_CHARACTERS);
     assert_int_equal(sight.detail.game_characters.has_full, 1);
-    assert_int_equal(sight.detail.game_characters.work.tl.row, 331);
-    assert_int_equal(sight.detail.game_characters.work.tl.col, 373);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 361);
-    assert_int_equal(sight.detail.game_characters.work.br.col, 423);
+    assert_int_equal(sight.detail.game_characters.work.tl.row, 333);
+    assert_int_equal(sight.detail.game_characters.work.tl.col, 375);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 358);
+    assert_int_equal(sight.detail.game_characters.work.br.col, 420);
 }
 
-static void test_perceive_characters_full_selected(void** state) {
-    unsigned int width, height; assert_false(bc_canvas_load("test/samples/characters_full_selected.ppm", shot, &width, &height));
+static void test_perceive_characters_full_selected1(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/characters_full_selected1.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_CHARACTERS);
     assert_int_equal(sight.detail.game_characters.has_full, 1);
-    assert_int_equal(sight.detail.game_characters.work.tl.row, 331);
-    assert_int_equal(sight.detail.game_characters.work.tl.col, 373);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 361);
-    assert_int_equal(sight.detail.game_characters.work.br.col, 423);
+    assert_int_equal(sight.detail.game_characters.work.tl.row, 333);
+    assert_int_equal(sight.detail.game_characters.work.tl.col, 375);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 358);
+    assert_int_equal(sight.detail.game_characters.work.br.col, 420);
+}
+
+static void test_perceive_characters_full_selected2(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/characters_full_selected2.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_CHARACTERS);
+    assert_int_equal(sight.detail.game_characters.has_full, 1);
+    assert_int_equal(sight.detail.game_characters.work.tl.row, 486);
+    assert_int_equal(sight.detail.game_characters.work.tl.col, 375);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 511);
+    assert_int_equal(sight.detail.game_characters.work.br.col, 420);
 }
 
 static void test_perceive_automatic_exit(void** state) {
@@ -192,7 +204,8 @@ int main(void) {
         cmocka_unit_test(test_perceive_error_other),
         cmocka_unit_test(test_perceive_characters_no_full),
         cmocka_unit_test(test_perceive_characters_full_unselected),
-        cmocka_unit_test(test_perceive_characters_full_selected),
+        cmocka_unit_test(test_perceive_characters_full_selected1),
+        cmocka_unit_test(test_perceive_characters_full_selected2),
         cmocka_unit_test(test_perceive_automatic_exit),
         cmocka_unit_test(test_perceive_game_paused),
         cmocka_unit_test(test_perceive_game_ongoing),
