@@ -302,7 +302,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 60 * 60;
     if (sight->glimpse != BC_GLIMPSE_LOADING) _bc_planning_reset_loading_wait();
-    if (sight->glimpse != BC_GLIMPSE_ERROR_OTHER) _bc_planning_reset_error_wait();
+    if (sight->glimpse == BC_GLIMPSE_GAME_ONGOING) _bc_planning_reset_error_wait();
     if (sight->glimpse != BC_GLIMPSE_UNKNOWN) _bc_planning_reset_unknown_wait();
     if (sight->glimpse != BC_GLIMPSE_GAME_CHARACTERS) _bc_planning_reset_characters_scroll_count();
     switch (sight->glimpse) {
