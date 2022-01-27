@@ -9,6 +9,6 @@ int _bc_planning_error_wait;
 int _bc_planning_error_wait_prev;
 int _bc_planning_unknown_wait;
 int _bc_planning_unknown_wait_prev;
-time_t _pc_planning_next_character_selection;
+time_t _bc_planning_next_character_selection;
 int _bc_planning_characters_scroll_count;
 

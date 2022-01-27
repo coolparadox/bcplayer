@@ -17,7 +17,7 @@ extern int _bc_planning_error_wait;
 extern int _bc_planning_error_wait_prev;
 extern int _bc_planning_unknown_wait;
 extern int _bc_planning_unknown_wait_prev;
-extern time_t _pc_planning_next_character_selection;
+extern time_t _bc_planning_next_character_selection;
 extern int _bc_planning_characters_scroll_count;
 
 void _bc_planning_reset_characters_scroll_count() {
@@ -41,7 +41,7 @@ void _bc_planning_reset_unknown_wait() {
 
 void bc_planning_init() {
     _bc_planning_state = BC_STATE_START;
-    _pc_planning_next_character_selection = time(NULL);
+    _bc_planning_next_character_selection = time(NULL);
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
     _bc_planning_reset_characters_scroll_count();
@@ -175,9 +175,11 @@ int _bc_planning_assess_game_selection(const union bc_perception_detail* detail,
 int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The game is playing righ after selecting new heroes.
     time_t now = time(NULL);
-    if (now < _pc_planning_next_character_selection) {
-        log_debug("character selection time not yet reached: %s", ctime(&_pc_planning_next_character_selection));
-        advice->sleep = bc_random_sample_uniform(60 * 1, 60 * 2);
+    if (now < _bc_planning_next_character_selection) {
+        log_debug("character selection time not yet reached: %s", ctime(&_bc_planning_next_character_selection));
+        advice->sleep = _bc_planning_next_character_selection - now;
+        unsigned int t = bc_random_sample_uniform(60 * 1, 60 * 2);
+        if (advice->sleep > t) advice->sleep = t;
         return 0;
     }
     log_debug("advice: click area: pause game");
@@ -194,7 +196,7 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
 int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The game is paused.
     struct bc_planning_hint* hint = advice->hints - 1;
-    if (time(NULL) >= _pc_planning_next_character_selection) {
+    if (time(NULL) >= _bc_planning_next_character_selection) {
         log_debug("advice: click button: heroes selection");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_paused.heroes;
@@ -216,7 +218,7 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
     // Character selection.
     time_t now = time(NULL);
     struct bc_planning_hint* hint = advice->hints - 1;
-    _pc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
+    _bc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
     if (detail->game_characters.has_full) {
         log_debug("advice: click button: work");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
