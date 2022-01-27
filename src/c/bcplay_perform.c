@@ -46,7 +46,7 @@ int _bc_perform_mouse_drag(const xdo_t* xdo, const struct bc_hint_mouse_drag* de
         usleep(BC_PERFORM_EVENT_DELAY_US);
     }
     if (xdo_move_mouse(xdo, detail->to.col, detail->to.row, 0)) fail("cannot move mouse");
-    usleep(BC_PERFORM_EVENT_DELAY_US);
+    usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
     if (xdo_mouse_up(xdo, CURRENTWINDOW, 1)) fail("cannot release mouse");
     usleep(BC_PERFORM_MOUSE_CLICK_DELAY_US);
     return 0;

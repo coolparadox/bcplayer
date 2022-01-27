@@ -218,7 +218,7 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
     // Character selection.
     time_t now = time(NULL);
     struct bc_planning_hint* hint = advice->hints - 1;
-    _bc_planning_next_character_selection = now + 60 * BC_CHARACTER_FASTEST_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
+    _bc_planning_next_character_selection = now + 60 * BC_CHARACTER_NOMINAL_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
     if (detail->game_characters.has_full) {
         log_debug("advice: click button: work");
         (++hint)->type = BC_HINT_MOUSE_CLICK;
@@ -232,9 +232,9 @@ int _bc_planning_assess_game_characters(const union bc_perception_detail* detail
         log_debug("advice: scroll characters list");
         (++hint)->type = BC_HINT_MOUSE_DRAG;
         hint->detail.mouse_drag.from.col = bc_random_sample_uniform(76, 361);
-        hint->detail.mouse_drag.from.row = bc_random_sample_uniform(468, 514);
+        hint->detail.mouse_drag.from.row = bc_random_sample_uniform(486, 496);
         hint->detail.mouse_drag.to.col = bc_random_sample_uniform(76, 361);
-        hint->detail.mouse_drag.to.row = bc_random_sample_uniform(180, 224);
+        hint->detail.mouse_drag.to.row = bc_random_sample_uniform(207, 217);
         advice->sleep = 5;
         return 0;
     }
