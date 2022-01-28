@@ -82,8 +82,8 @@ BCPLAY_LIB_SOURCES = \
 BCPACK_PPM_SOURCES = \
 	src/ppm/appsite_connect_wallet.ppm \
 	src/ppm/automatic_exit_label.ppm \
-	src/ppm/game_characters_full_selected1.ppm \
-	src/ppm/game_characters_full_unselected.ppm \
+	src/ppm/game_characters_full_1.ppm \
+	src/ppm/game_characters_full_2.ppm \
 	src/ppm/game_characters_title.ppm \
 	src/ppm/game_error_title.ppm \
 	src/ppm/game_exit.ppm \
