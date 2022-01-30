@@ -12,6 +12,7 @@ extern unsigned char bcpack_appsite_connect_wallet[];
 extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_game_characters_full_1[];
 extern unsigned char bcpack_game_characters_full_2[];
+extern unsigned char bcpack_game_characters_full_3[];
 extern unsigned char bcpack_game_characters_title[];
 extern unsigned char bcpack_game_error_title[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
@@ -185,7 +186,7 @@ not_game_selection:
         if (frag_row < 0 || frag_col < 0) goto not_character_selection;
         sight->detail.game_characters.has_full = 0;
 
-        bc_canvas_unpack(bcpack_game_characters_full_1, frag, &frag_width, &frag_height);
+        bc_canvas_unpack(bcpack_game_characters_full_3, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
@@ -198,6 +199,18 @@ not_game_selection:
         }
 
         bc_canvas_unpack(bcpack_game_characters_full_2, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.game_characters.has_full = 1;
+            sight->detail.game_characters.work.tl.row = frag_row - 18;
+            sight->detail.game_characters.work.tl.col = frag_col + 22;
+            sight->detail.game_characters.work.br.row = frag_row + 7;
+            sight->detail.game_characters.work.br.col = frag_col + 67;
+            cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
+        }
+
+        bc_canvas_unpack(bcpack_game_characters_full_1, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 12, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
