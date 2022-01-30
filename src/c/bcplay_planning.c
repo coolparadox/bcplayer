@@ -17,6 +17,7 @@ extern int _bc_planning_error_wait;
 extern int _bc_planning_error_wait_prev;
 extern int _bc_planning_unknown_wait;
 extern int _bc_planning_unknown_wait_prev;
+extern int _bc_planning_full_energy_wait;
 extern time_t _bc_planning_next_character_selection;
 extern int _bc_planning_characters_scroll_count;
 
@@ -41,6 +42,7 @@ void _bc_planning_reset_unknown_wait() {
 
 void bc_planning_init() {
     _bc_planning_state = BC_STATE_START;
+    _bc_planning_full_energy_wait = BC_FULL_ENERGY_WAIT_MINIMUM;
     _bc_planning_next_character_selection = time(NULL);
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
@@ -216,29 +218,35 @@ int _bc_planning_assess_game_paused(const union bc_perception_detail* detail, st
 
 int _bc_planning_assess_game_characters(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // Character selection.
-    time_t now = time(NULL);
     struct bc_planning_hint* hint = advice->hints - 1;
-    _bc_planning_next_character_selection = now + 60 * BC_CHARACTER_NOMINAL_RECOVERY_TIME_MIN / BC_AMOUNT_OF_CHARACTERS;
+    _bc_planning_next_character_selection = time(NULL) + _bc_planning_full_energy_wait;
     if (detail->game_characters.has_full) {
-        log_debug("advice: click button: work");
+        _bc_planning_full_energy_wait -= BC_FULL_ENERGY_WAIT_ADJUST;
+        if (_bc_planning_full_energy_wait < BC_FULL_ENERGY_WAIT_MINIMUM) _bc_planning_full_energy_wait = BC_FULL_ENERGY_WAIT_MINIMUM;
+        log_debug("wait adjustment: %02u:%02u", _bc_planning_full_energy_wait / 60, _bc_planning_full_energy_wait % 60);
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         const struct bc_bbox* bbox = &detail->game_characters.work;
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+        log_debug("advice: click button: work");
         // FIXME: add some delay here
         goto _bc_planning_assess_game_characters_leave;
     }
     if (++_bc_planning_characters_scroll_count <= 3) {
-        log_debug("advice: scroll characters list");
         (++hint)->type = BC_HINT_MOUSE_DRAG;
         hint->detail.mouse_drag.from.col = bc_random_sample_uniform(76, 361);
         hint->detail.mouse_drag.from.row = bc_random_sample_uniform(486, 496);
         hint->detail.mouse_drag.to.col = bc_random_sample_uniform(76, 361);
         hint->detail.mouse_drag.to.row = bc_random_sample_uniform(207, 217);
+        log_debug("advice: scroll characters list");
         advice->sleep = 2;
         return 0;
     }
 _bc_planning_assess_game_characters_leave:
+    if (!detail->game_characters.has_full) {
+        _bc_planning_full_energy_wait += BC_FULL_ENERGY_WAIT_ADJUST;
+        log_debug("wait adjustment: %02u:%02u", _bc_planning_full_energy_wait / 60, _bc_planning_full_energy_wait % 60);
+    }
     log_debug("advice: click area: game pause");
     (++hint)->type = BC_HINT_MOUSE_CLICK;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(276, 685);
