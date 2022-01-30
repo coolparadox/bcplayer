@@ -42,7 +42,7 @@ static void test_perceive_characters_full_unselected(void** state) {
     assert_int_equal(sight.detail.game_characters.has_full, 1);
     assert_int_equal(sight.detail.game_characters.work.tl.row, 334);
     assert_int_equal(sight.detail.game_characters.work.tl.col, 376);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 359);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 356);
     assert_int_equal(sight.detail.game_characters.work.br.col, 421);
 }
 
@@ -54,7 +54,7 @@ static void test_perceive_characters_full_selected1(void** state) {
     assert_int_equal(sight.detail.game_characters.has_full, 1);
     assert_int_equal(sight.detail.game_characters.work.tl.row, 334);
     assert_int_equal(sight.detail.game_characters.work.tl.col, 376);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 359);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 356);
     assert_int_equal(sight.detail.game_characters.work.br.col, 421);
 }
 
@@ -66,7 +66,7 @@ static void test_perceive_characters_full_selected2(void** state) {
     assert_int_equal(sight.detail.game_characters.has_full, 1);
     assert_int_equal(sight.detail.game_characters.work.tl.row, 487);
     assert_int_equal(sight.detail.game_characters.work.tl.col, 376);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 512);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 509);
     assert_int_equal(sight.detail.game_characters.work.br.col, 421);
 }
 
@@ -78,7 +78,7 @@ static void test_perceive_characters_full_4(void** state) {
     assert_int_equal(sight.detail.game_characters.has_full, 1);
     assert_int_equal(sight.detail.game_characters.work.tl.row, 199);
     assert_int_equal(sight.detail.game_characters.work.tl.col, 376);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 224);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 221);
     assert_int_equal(sight.detail.game_characters.work.br.col, 421);
 }
 
@@ -90,7 +90,7 @@ static void test_perceive_characters_full_5(void** state) {
     assert_int_equal(sight.detail.game_characters.has_full, 1);
     assert_int_equal(sight.detail.game_characters.work.tl.row, 432);
     assert_int_equal(sight.detail.game_characters.work.tl.col, 376);
-    assert_int_equal(sight.detail.game_characters.work.br.row, 457);
+    assert_int_equal(sight.detail.game_characters.work.br.row, 454);
     assert_int_equal(sight.detail.game_characters.work.br.col, 421);
 }
 

@@ -193,7 +193,7 @@ not_game_selection:
             sight->detail.game_characters.has_full = 1;
             sight->detail.game_characters.work.tl.row = frag_row - 18;
             sight->detail.game_characters.work.tl.col = frag_col + 22;
-            sight->detail.game_characters.work.br.row = frag_row + 7;
+            sight->detail.game_characters.work.br.row = frag_row + 4;
             sight->detail.game_characters.work.br.col = frag_col + 67;
             cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
         }
@@ -205,7 +205,7 @@ not_game_selection:
             sight->detail.game_characters.has_full = 1;
             sight->detail.game_characters.work.tl.row = frag_row - 18;
             sight->detail.game_characters.work.tl.col = frag_col + 22;
-            sight->detail.game_characters.work.br.row = frag_row + 7;
+            sight->detail.game_characters.work.br.row = frag_row + 4;
             sight->detail.game_characters.work.br.col = frag_col + 67;
             cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
         }
@@ -217,7 +217,7 @@ not_game_selection:
             sight->detail.game_characters.has_full = 1;
             sight->detail.game_characters.work.tl.row = frag_row - 18;
             sight->detail.game_characters.work.tl.col = frag_col + 22;
-            sight->detail.game_characters.work.br.row = frag_row + 7;
+            sight->detail.game_characters.work.br.row = frag_row + 4;
             sight->detail.game_characters.work.br.col = frag_col + 67;
             cleanup_return(BC_GLIMPSE_GAME_CHARACTERS, "character selection, full energy hero");
         }
