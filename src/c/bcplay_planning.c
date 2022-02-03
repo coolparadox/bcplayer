@@ -42,7 +42,7 @@ void _bc_planning_reset_unknown_wait() {
 
 void bc_planning_init() {
     _bc_planning_state = BC_STATE_START;
-    _bc_planning_full_energy_wait = BC_FULL_ENERGY_WAIT_MINIMUM;
+    _bc_planning_full_energy_wait = BC_FULL_ENERGY_WAIT_START;
     _bc_planning_next_character_selection = time(NULL);
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
