@@ -270,7 +270,7 @@ int _bc_planning_assess_error_other(const union bc_perception_detail* detail, st
     struct bc_planning_hint* hint = advice->hints - 1;
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "F5");
     advice->sleep = _bc_planning_error_wait;
-    if (_bc_planning_error_wait < 600) _bc_planning_error_wait += _bc_planning_error_wait_prev;
+    if (_bc_planning_error_wait < 900) _bc_planning_error_wait += _bc_planning_error_wait_prev;
     _bc_planning_error_wait_prev = advice->sleep;
     return 0;
 }
