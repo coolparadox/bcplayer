@@ -27,6 +27,7 @@ extern unsigned char bcpack_game_kiosk_fullscreen[];
 extern unsigned char bcpack_game_kiosk_title[];
 extern unsigned char bcpack_game_paused_heroes[];
 extern unsigned char bcpack_game_selection_treasure_hunt[];
+extern unsigned char bcpack_unity_error[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
 
@@ -117,10 +118,15 @@ not_metamask_unlock:
 
     // Other type of error?
     {
+        int frag_row, frag_col;
         unsigned int frag_width, frag_height;
         bc_canvas_unpack(bcpack_game_error_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        int frag_row = -1; int frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = -1; frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
+        bc_canvas_unpack(bcpack_unity_error, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        frag_row = -1; frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
     }
 
