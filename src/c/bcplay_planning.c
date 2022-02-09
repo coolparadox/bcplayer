@@ -20,6 +20,7 @@ extern int _bc_planning_unknown_wait_prev;
 extern int _bc_planning_full_energy_wait;
 extern time_t _bc_planning_next_character_selection;
 extern int _bc_planning_characters_scroll_count;
+extern int _bc_planning_game_selected;
 
 void _bc_planning_reset_characters_scroll_count() {
     _bc_planning_characters_scroll_count = 0;
@@ -47,6 +48,7 @@ void bc_planning_init() {
     _bc_planning_reset_error_wait();
     _bc_planning_reset_unknown_wait();
     _bc_planning_reset_characters_scroll_count();
+    _bc_planning_game_selected = 0;
 }
 
 enum bc_planning_states bc_planning_get_state() {
@@ -170,12 +172,23 @@ int _bc_planning_assess_game_selection(const union bc_perception_detail* detail,
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
         hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
     }
+    _bc_planning_game_selected = 1;
     advice->sleep = 2;
     return 0;
 }
 
 int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
-    // The game is playing righ after selecting new heroes.
+    // The game is playing right after selecting new heroes.
+    struct bc_planning_hint* hint = advice->hints - 1;
+    if (!_bc_planning_game_selected) {
+        log_debug("advice: click area: game exit");
+        (++hint)->type = BC_HINT_MOUSE_CLICK;
+        const struct bc_bbox* bbox = &detail->game_ongoing.exit;
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+        advice->sleep = 0;
+        return 0;
+    }
     time_t now = time(NULL);
     if (now < _bc_planning_next_character_selection) {
         log_debug("character selection time not yet reached: %s", ctime(&_bc_planning_next_character_selection));
@@ -185,7 +198,6 @@ int _bc_planning_assess_game_ongoing(const union bc_perception_detail* detail, s
         return 0;
     }
     log_debug("advice: click area: pause game");
-    struct bc_planning_hint* hint = advice->hints - 1;
     {
         (++hint)->type = BC_HINT_MOUSE_CLICK;
         hint->detail.mouse_click.coord.col = bc_random_sample_uniform(467, 493);
@@ -252,6 +264,7 @@ _bc_planning_assess_game_characters_leave:
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(276, 685);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(566, 595);
     advice->sleep = 1;
+    _bc_planning_game_selected = 0;  // reshuffle players
     return 0;
 }
 

@@ -43,6 +43,9 @@ union bc_perception_detail {
         struct bc_bbox treasure_hunt;  // "treasure hunt" clickable text
     } game_selection;
     struct {
+        struct bc_bbox exit;  // game exit button
+    } game_ongoing;
+    struct {
         struct bc_bbox heroes;  // "heroes" clickable text
     } game_paused;
     struct {

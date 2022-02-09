@@ -235,11 +235,15 @@ not_character_selection:
     // In game?
     {
         unsigned int frag_width, frag_height;
-        int frag_row = -1, frag_col = -1;
+        int frag_row, frag_col;
         bc_canvas_unpack(bcpack_game_exit, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_in_game;
+        sight->detail.game_ongoing.exit.tl.row = frag_row;
+        sight->detail.game_ongoing.exit.tl.col = frag_col;
+        sight->detail.game_ongoing.exit.br.row = frag_row + frag_height - 1;
+        sight->detail.game_ongoing.exit.br.col = frag_col + frag_width - 1;
         bc_canvas_unpack(bcpack_game_paused_heroes, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);

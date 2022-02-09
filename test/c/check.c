@@ -124,6 +124,10 @@ static void test_perceive_game_ongoing(void** state) {
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
     struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
     assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_ONGOING);
+    assert_int_equal(sight.detail.game_ongoing.exit.tl.row, 10);
+    assert_int_equal(sight.detail.game_ongoing.exit.tl.col, 30);
+    assert_int_equal(sight.detail.game_ongoing.exit.br.row, 44);
+    assert_int_equal(sight.detail.game_ongoing.exit.br.col, 52);
 }
 
 static void test_perceive_game_selection(void** state) {
@@ -232,27 +236,27 @@ int main(void) {
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_perceive_error_unity),
-//        cmocka_unit_test(test_perceive_loading),
-//        cmocka_unit_test(test_perceive_error_other),
-//        cmocka_unit_test(test_perceive_characters_no_full),
-//        cmocka_unit_test(test_perceive_characters_full_unselected),
-//        cmocka_unit_test(test_perceive_characters_full_selected1),
-//        cmocka_unit_test(test_perceive_characters_full_selected2),
-//        cmocka_unit_test(test_perceive_characters_full_4),
-//        cmocka_unit_test(test_perceive_characters_full_5),
-//        cmocka_unit_test(test_perceive_automatic_exit),
-//        cmocka_unit_test(test_perceive_game_paused),
-//        cmocka_unit_test(test_perceive_game_ongoing),
-//        cmocka_unit_test(test_perceive_game_selection),
-//        cmocka_unit_test(test_perceive_game_kiosk_scrolled),
-//        cmocka_unit_test(test_perceive_game_kiosk_unscrolled),
-//        cmocka_unit_test(test_perceive_metamask_signature_request),
-//        cmocka_unit_test(test_perceive_metamask_unlock),
-//        cmocka_unit_test(test_perceive_appsite_connect_wallet),
-//        cmocka_unit_test(test_perceive_kiosk_clean),
-//        cmocka_unit_test(test_perceive_kiosk_updated),
-//        cmocka_unit_test(test_perceive_black),
-//        cmocka_unit_test(test_perceive_noise),
+        cmocka_unit_test(test_perceive_loading),
+        cmocka_unit_test(test_perceive_error_other),
+        cmocka_unit_test(test_perceive_characters_no_full),
+        cmocka_unit_test(test_perceive_characters_full_unselected),
+        cmocka_unit_test(test_perceive_characters_full_selected1),
+        cmocka_unit_test(test_perceive_characters_full_selected2),
+        cmocka_unit_test(test_perceive_characters_full_4),
+        cmocka_unit_test(test_perceive_characters_full_5),
+        cmocka_unit_test(test_perceive_automatic_exit),
+        cmocka_unit_test(test_perceive_game_paused),
+        cmocka_unit_test(test_perceive_game_ongoing),
+        cmocka_unit_test(test_perceive_game_selection),
+        cmocka_unit_test(test_perceive_game_kiosk_scrolled),
+        cmocka_unit_test(test_perceive_game_kiosk_unscrolled),
+        cmocka_unit_test(test_perceive_metamask_signature_request),
+        cmocka_unit_test(test_perceive_metamask_unlock),
+        cmocka_unit_test(test_perceive_appsite_connect_wallet),
+        cmocka_unit_test(test_perceive_kiosk_clean),
+        cmocka_unit_test(test_perceive_kiosk_updated),
+        cmocka_unit_test(test_perceive_black),
+        cmocka_unit_test(test_perceive_noise),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
