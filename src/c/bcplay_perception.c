@@ -14,7 +14,9 @@ extern unsigned char bcpack_game_characters_full_1[];
 extern unsigned char bcpack_game_characters_full_2[];
 extern unsigned char bcpack_game_characters_full_3[];
 extern unsigned char bcpack_game_characters_title[];
+extern unsigned char bcpack_game_characters_title_2[];
 extern unsigned char bcpack_game_error_title[];
+extern unsigned char bcpack_game_error_title_2[];
 extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_loading[];
 extern unsigned char bcpack_metamask_unlock_button[];
@@ -122,11 +124,15 @@ not_metamask_unlock:
         unsigned int frag_width, frag_height;
         bc_canvas_unpack(bcpack_game_error_title, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        frag_row = -1; frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
+        bc_canvas_unpack(bcpack_game_error_title_2, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
         bc_canvas_unpack(bcpack_unity_error, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        frag_row = -1; frag_col = -1; frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_ERROR_OTHER, "game error");
     }
 
@@ -186,7 +192,7 @@ not_game_selection:
         unsigned int frag_width, frag_height;
         int frag_row, frag_col;
 
-        bc_canvas_unpack(bcpack_game_characters_title, frag, &frag_width, &frag_height);
+        bc_canvas_unpack(bcpack_game_characters_title_2, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
         frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row < 0 || frag_col < 0) goto not_character_selection;

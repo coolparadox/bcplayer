@@ -26,6 +26,13 @@ static void test_perceive_error_other(void** state) {
     assert_int_equal(sight.glimpse, BC_GLIMPSE_ERROR_OTHER);
 }
 
+static void test_perceive_error_other_2(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/error_wrong_network_2.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_ERROR_OTHER);
+}
+
 static void test_perceive_error_unity(void** state) {
     unsigned int width, height; assert_false(bc_canvas_load("test/samples/error_unity.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
@@ -238,6 +245,7 @@ int main(void) {
         cmocka_unit_test(test_perceive_error_unity),
         cmocka_unit_test(test_perceive_loading),
         cmocka_unit_test(test_perceive_error_other),
+        cmocka_unit_test(test_perceive_error_other_2),
         cmocka_unit_test(test_perceive_characters_no_full),
         cmocka_unit_test(test_perceive_characters_full_unselected),
         cmocka_unit_test(test_perceive_characters_full_selected1),
