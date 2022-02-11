@@ -2,4 +2,4 @@
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
 i3 &
-exec ~/bcplay
+exec ~/bcplay $(~/get_metamask_uuid)

@@ -51,6 +51,14 @@ stop:
 .PHONY: /home/bcplayer1/xstartup
 .SILENT: /home/bcplayer1/xstartup
 
+/home/bcplayer1/get_metamask_uuid: src/sh/get_metamask_uuid
+	sudo $(RM) $@
+	sudo cp -f $< $@
+	sudo chown bcplayer1 $@
+	sudo chmod 0755 $@
+.PHONY: /home/bcplayer1/get_metamask_uuid
+.SILENT: /home/bcplayer1/get_metamask_uuid
+
 BCPLAY_HEADERS = \
 	src/c/bcplay_canvas.h \
 	src/c/bcplay_canvas_types.h \
@@ -103,7 +111,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/metamask_signature_request_title.ppm \
 	src/ppm/unity_error.ppm \
 
-BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
+BCPLAY_SOURCES = src/c/bcplay.c src/c/bcplay_vars.c $(BCPLAY_LIB_SOURCES)
 
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)

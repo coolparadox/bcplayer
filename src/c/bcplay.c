@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 
@@ -12,6 +13,8 @@
 #include "bcplay_planning.h"
 
 #define BC_MODULE "main"
+
+extern char _bc_metamask_uuid[];
 
 /*
  * Wish list
@@ -36,6 +39,11 @@ int main(int argc, char** argv) {
     setlogmask(LOG_UPTO(BC_LOG_LEVEL));
     openlog(NULL, LOG_PID, LOG_LOCAL0);
     log_notice("player %u: hello", BC_PLAYER_USERID);
+
+    // Parse arguments.
+    if (argc != 2) fail("missing argument: metamask extension uuid");
+    strcpy(_bc_metamask_uuid, argv[1]);
+    log_debug("metamask uuid: %s", _bc_metamask_uuid);
 
     // Play!
     bc_planning_init();

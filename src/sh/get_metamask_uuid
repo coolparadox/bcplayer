@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+FIREFOX_PROFILE=$(sed -e '/^\[Install/,$!d' -e '/^Default=/!d' -e 's/.*=//' -e 1q ~/.mozilla/firefox/profiles.ini)
+eval $(sed -e '/^user_pref("extensions\.webextensions.uuids"/!d' -e 's/.* //' -e 's/);$//' -e 's/^/WEBEXTENSIONS_UUIDS=/' ~/.mozilla/firefox/$FIREFOX_PROFILE/prefs.js)
+jq -r '."webextension@metamask.io"' <<<$WEBEXTENSIONS_UUIDS
