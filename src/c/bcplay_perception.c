@@ -21,6 +21,7 @@ extern unsigned char bcpack_kiosk_updated_not_now[];
 extern unsigned char bcpack_loading[];
 extern unsigned char bcpack_metamask_unlock_button[];
 extern unsigned char bcpack_metamask_unlock_mascot[];
+extern unsigned char bcpack_metamask_unlocked[];
 extern unsigned char bcpack_metamask_signature_request_origin[];
 extern unsigned char bcpack_metamask_signature_request_sign_button[];
 extern unsigned char bcpack_metamask_signature_request_title[];
@@ -106,6 +107,16 @@ not_metamask_signature_request:
         unlock->br.row = frag_row + frag_height - 1;
         cleanup_return(BC_GLIMPSE_METAMASK_UNLOCK, "metamask unlock");
 not_metamask_unlock:
+    }
+
+    // Metamask, unlocked?
+    {
+        unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+        bc_canvas_unpack(bcpack_metamask_unlocked, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) cleanup_return(BC_GLIMPSE_METAMASK_UNLOCKED, "metamask unlocked");
     }
 
     // Automatic exit error?

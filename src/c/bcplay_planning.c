@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "bcplay_conf.h"
@@ -10,6 +11,7 @@
 #define BC_MODULE "planning"
 
 extern enum bc_planning_states _bc_planning_state;
+extern char _bc_metamask_uuid[];
 
 extern int _bc_planning_loading_wait;
 extern int _bc_planning_loading_wait_prev;
@@ -64,12 +66,12 @@ int _bc_planning_assess_black(const union bc_perception_detail* detail, struct b
 
 int _bc_planning_assess_kiosk_clean(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
     // The kiosk browser has just appeared.
-    log_debug("advice: type the game url");
+    log_debug("advice: access metamask extension");
     struct bc_planning_hint* hint = advice->hints - 1;
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "ctrl+l");
-    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "app.bombcrypto.io");
+    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; snprintf(hint->detail.keyboard_sequence.keys, BC_HINT_KEYSEQ_SIZE, "moz-extension://%s/home.html", _bc_metamask_uuid);
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
-    advice->sleep = 5;
+    advice->sleep = 3;
     return 0;
 }
 
@@ -88,7 +90,7 @@ int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail*
         hint->detail.mouse_move.coord.col = 10;
         hint->detail.mouse_move.coord.row = 10;
     }
-    advice->sleep = 10;
+    advice->sleep = 5;
     return 0;
 }
 
@@ -96,12 +98,18 @@ int _bc_planning_assess_metamask_unlock(const union bc_perception_detail* detail
     // Metamask awaits for the unlock password.
     log_debug("advice: type metamask password");
     struct bc_planning_hint* hint = advice->hints - 1;
-    {
-        (++hint)->type = BC_HINT_MOUSE_CLICK;
-        hint->detail.mouse_click.coord.col = 790;
-        hint->detail.mouse_click.coord.row = 340;
-    }
     (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "3hdna3Ut");
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
+    advice->sleep = 5;
+    return 0;
+}
+
+int _bc_planning_assess_metamask_unlocked(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // Metamask was just unlocked.
+    log_debug("advice: access the game url");
+    struct bc_planning_hint* hint = advice->hints - 1;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "ctrl+l");
+    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "app.bombcrypto.io");
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
     advice->sleep = 10;
     return 0;
@@ -335,6 +343,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_KIOSK_CLEAN: return _bc_planning_assess_kiosk_clean(&sight->detail, advice);
         case BC_GLIMPSE_APPSITE_CONNECT_WALLET: return _bc_planning_assess_appsite_connect_wallet(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_UNLOCK: return _bc_planning_assess_metamask_unlock(&sight->detail, advice);
+        case BC_GLIMPSE_METAMASK_UNLOCKED: return _bc_planning_assess_metamask_unlocked(&sight->detail, advice);
         case BC_GLIMPSE_METAMASK_SIGNATURE_REQUEST: return _bc_planning_assess_metamask_signature_request(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_UNSCROLLED: return _bc_planning_assess_game_kiosk_unscrolled(&sight->detail, advice);
         case BC_GLIMPSE_GAME_KIOSK_SCROLLED: return _bc_planning_assess_game_kiosk_scrolled(&sight->detail, advice);

@@ -106,6 +106,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/loading.ppm \
 	src/ppm/metamask_unlock_button.ppm \
 	src/ppm/metamask_unlock_mascot.ppm \
+	src/ppm/metamask_unlocked.ppm \
 	src/ppm/metamask_signature_request_origin.ppm \
 	src/ppm/metamask_signature_request_sign_button.ppm \
 	src/ppm/metamask_signature_request_title.ppm \

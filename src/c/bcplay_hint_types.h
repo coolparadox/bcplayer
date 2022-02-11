@@ -5,7 +5,7 @@
 
 #include "bcplay_canvas_types.h"
 
-#define BC_HINT_KEYSEQ_SIZE 0x40
+#define BC_HINT_KEYSEQ_SIZE 0x80
 
 enum bc_hint_type {
     BC_HINT_END = 0,
