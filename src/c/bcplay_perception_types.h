@@ -22,6 +22,7 @@ enum bc_glimpse {
     BC_GLIMPSE_GAME_CHARACTERS,
     BC_GLIMPSE_ERROR_OTHER,
     BC_GLIMPSE_LOADING,
+    BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED,
 };
 
 union bc_perception_detail {
@@ -53,6 +54,9 @@ union bc_perception_detail {
         int has_full;  // has a full energy character?
         struct bc_bbox work;  // "work" clickable text if has_full
     } game_characters;
+    struct {
+        struct bc_bbox checkbox;  // game term acceptance checkbox
+    } game_term_acceptance_unselected;
 };
 
 struct bc_perception {

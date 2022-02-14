@@ -85,6 +85,7 @@ BCPLAY_LIB_SOURCES = \
 	src/c/bcplay_random.c \
 	src/c/bcplay_planning.c \
 	src/c/bcplay_planning_vars.c \
+	src/c/bcplay_vars.c \
 	src/ppm/bcplay_pack_vars.c \
 
 BCPACK_PPM_SOURCES = \
@@ -102,6 +103,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/game_kiosk_title.ppm \
 	src/ppm/game_paused_heroes.ppm \
 	src/ppm/game_selection_treasure_hunt.ppm \
+	src/ppm/game_term_acceptance_checkbox.ppm \
 	src/ppm/kiosk_updated_not_now.ppm \
 	src/ppm/loading.ppm \
 	src/ppm/metamask_unlock_button.ppm \
@@ -112,7 +114,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/metamask_signature_request_title.ppm \
 	src/ppm/unity_error.ppm \
 
-BCPLAY_SOURCES = src/c/bcplay.c src/c/bcplay_vars.c $(BCPLAY_LIB_SOURCES)
+BCPLAY_SOURCES = src/c/bcplay.c $(BCPLAY_LIB_SOURCES)
 
 bcplay: $(BCPLAY_SOURCES) $(BCPLAY_HEADERS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o bcplay $(BCPLAY_SOURCES)
