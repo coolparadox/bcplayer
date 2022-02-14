@@ -23,6 +23,7 @@ enum bc_glimpse {
     BC_GLIMPSE_ERROR_OTHER,
     BC_GLIMPSE_LOADING,
     BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED,
+    BC_GLIMPSE_GAME_TERM_ACCEPTANCE_SELECTED,
 };
 
 union bc_perception_detail {
@@ -57,6 +58,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox checkbox;  // game term acceptance checkbox
     } game_term_acceptance_unselected;
+    struct {
+        struct bc_bbox button;  // game term acceptance button
+    } game_term_acceptance_selected;
 };
 
 struct bc_perception {

@@ -337,6 +337,26 @@ int _bc_planning_assess_game_term_acceptance_unselected(const union bc_perceptio
     const struct bc_bbox* bbox = &detail->game_term_acceptance_unselected.checkbox;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    advice->sleep = 1;
+    return 0;
+}
+
+int _bc_planning_assess_game_term_acceptance_selected(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game awaits for clicking the term acceptance button.
+    struct bc_planning_hint* hint = advice->hints - 1;
+    log_debug("advice: click area: term acceptance button");
+    {
+        (++hint)->type = BC_HINT_MOUSE_CLICK;
+        const struct bc_bbox* bbox = &detail->game_term_acceptance_selected.button;
+        hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+        hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    }
+    {
+        (++hint)->type = BC_HINT_MOUSE_MOVE;
+        hint->detail.mouse_move.coord.col = 10;
+        hint->detail.mouse_move.coord.row = 10;
+    }
+    advice->sleep = 2;
     return 0;
 }
 
@@ -366,6 +386,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_ERROR_OTHER: return _bc_planning_assess_error_other(&sight->detail, advice);
         case BC_GLIMPSE_LOADING: return _bc_planning_assess_loading(&sight->detail, advice);
         case BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED: return _bc_planning_assess_game_term_acceptance_unselected(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_TERM_ACCEPTANCE_SELECTED: return _bc_planning_assess_game_term_acceptance_selected(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

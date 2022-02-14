@@ -9,6 +9,7 @@
 #define BC_MODULE "perception"
 
 extern unsigned char bcpack_appsite_connect_wallet[];
+extern unsigned char bcpack_appsite_connect_wallet_2[];
 extern unsigned char bcpack_automatic_exit_label[];
 extern unsigned char bcpack_game_characters_full_1[];
 extern unsigned char bcpack_game_characters_full_2[];
@@ -31,6 +32,7 @@ extern unsigned char bcpack_game_kiosk_title[];
 extern unsigned char bcpack_game_paused_heroes[];
 extern unsigned char bcpack_game_selection_treasure_hunt[];
 extern unsigned char bcpack_game_term_acceptance_checkbox[];
+extern unsigned char bcpack_game_term_acceptance_button[];
 extern unsigned char bcpack_unity_error[];
 
 int bc_perceive(const struct bc_canvas_pixmap* shot, struct bc_perception* sight) {
@@ -172,15 +174,42 @@ not_game_in_kiosk:
     // App site, connect wallet?
     {
         unsigned int frag_width, frag_height;
+        int frag_row, frag_col;
+
         bc_canvas_unpack(bcpack_appsite_connect_wallet, frag, &frag_width, &frag_height);
         bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
-        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
         if (frag_row >= 0 && frag_col >= 0) {
             sight->detail.appsite_connect_wallet.connect_wallet.tl.row = frag_row;
             sight->detail.appsite_connect_wallet.connect_wallet.tl.col = frag_col;
             sight->detail.appsite_connect_wallet.connect_wallet.br.row = frag_row + frag_height - 1;
             sight->detail.appsite_connect_wallet.connect_wallet.br.col = frag_col + frag_width - 1;
             cleanup_return(BC_GLIMPSE_APPSITE_CONNECT_WALLET, "connect wallet");
+        }
+        bc_canvas_unpack(bcpack_appsite_connect_wallet_2, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        frag_row = frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.appsite_connect_wallet.connect_wallet.tl.row = frag_row;
+            sight->detail.appsite_connect_wallet.connect_wallet.tl.col = frag_col;
+            sight->detail.appsite_connect_wallet.connect_wallet.br.row = frag_row + frag_height - 1;
+            sight->detail.appsite_connect_wallet.connect_wallet.br.col = frag_col + frag_width - 1;
+            cleanup_return(BC_GLIMPSE_APPSITE_CONNECT_WALLET, "connect wallet");
+        }
+    }
+
+    // App site, game term acceptance, selected?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_game_term_acceptance_button, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.game_term_acceptance_unselected.checkbox.tl.row = frag_row;
+            sight->detail.game_term_acceptance_unselected.checkbox.tl.col = frag_col;
+            sight->detail.game_term_acceptance_unselected.checkbox.br.row = frag_row + frag_height;
+            sight->detail.game_term_acceptance_unselected.checkbox.br.col = frag_col + frag_width;
+            cleanup_return(BC_GLIMPSE_GAME_TERM_ACCEPTANCE_SELECTED, "term acceptance, selected");
         }
     }
 
