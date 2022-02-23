@@ -29,6 +29,7 @@ extern unsigned char bcpack_metamask_signature_request_title[];
 extern unsigned char bcpack_game_exit[];
 extern unsigned char bcpack_game_kiosk_fullscreen[];
 extern unsigned char bcpack_game_kiosk_title[];
+extern unsigned char bcpack_game_login_metamask_button[];
 extern unsigned char bcpack_game_paused_heroes[];
 extern unsigned char bcpack_game_selection_treasure_hunt[];
 extern unsigned char bcpack_game_term_acceptance_checkbox[];
@@ -225,6 +226,21 @@ not_game_in_kiosk:
             sight->detail.game_term_acceptance_unselected.checkbox.br.row = frag_row + 34;
             sight->detail.game_term_acceptance_unselected.checkbox.br.col = frag_col + 34;
             cleanup_return(BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED, "term acceptance, unselected");
+        }
+    }
+
+    // App site, game login with metamask?
+    {
+        unsigned int frag_width, frag_height;
+        bc_canvas_unpack(bcpack_game_login_metamask_button, frag, &frag_width, &frag_height);
+        bc_canvas_fragment_map(shot, frag, frag_width, frag_height, map);
+        int frag_row = -1; int frag_col = -1; bc_canvas_scan_less_than(map, 0, &frag_row, &frag_col);
+        if (frag_row >= 0 && frag_col >= 0) {
+            sight->detail.game_login_with_metamask.button.tl.row = frag_row;
+            sight->detail.game_login_with_metamask.button.tl.col = frag_col;
+            sight->detail.game_login_with_metamask.button.br.row = frag_row + frag_height - 1;
+            sight->detail.game_login_with_metamask.button.br.col = frag_col + frag_width - 1;
+            cleanup_return(BC_GLIMPSE_GAME_LOGIN_WITH_METAMASK, "game login with metamask");
         }
     }
 

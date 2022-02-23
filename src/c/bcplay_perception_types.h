@@ -24,6 +24,7 @@ enum bc_glimpse {
     BC_GLIMPSE_LOADING,
     BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED,
     BC_GLIMPSE_GAME_TERM_ACCEPTANCE_SELECTED,
+    BC_GLIMPSE_GAME_LOGIN_WITH_METAMASK,
 };
 
 union bc_perception_detail {
@@ -61,6 +62,9 @@ union bc_perception_detail {
     struct {
         struct bc_bbox button;  // game term acceptance button
     } game_term_acceptance_selected;
+    struct {
+        struct bc_bbox button;  // metamask oprion clickable area
+    } game_login_with_metamask;
 };
 
 struct bc_perception {

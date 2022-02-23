@@ -90,7 +90,7 @@ int _bc_planning_assess_appsite_connect_wallet(const union bc_perception_detail*
         hint->detail.mouse_move.coord.col = 10;
         hint->detail.mouse_move.coord.row = 10;
     }
-    advice->sleep = 5;
+    advice->sleep = 1;
     return 0;
 }
 
@@ -360,6 +360,18 @@ int _bc_planning_assess_game_term_acceptance_selected(const union bc_perception_
     return 0;
 }
 
+int _bc_planning_assess_game_login_with_metamask(const union bc_perception_detail* detail, struct bc_planning_recommendation* advice) {
+    // The game awaits for a login selection method.
+    struct bc_planning_hint* hint = advice->hints - 1;
+    log_debug("advice: click area: metamask login option");
+    (++hint)->type = BC_HINT_MOUSE_CLICK;
+    const struct bc_bbox* bbox = &detail->game_login_with_metamask.button;
+    hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
+    hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    advice->sleep = 5;
+    return 0;
+}
+
 int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_recommendation* advice) {
     memset(advice->hints, 0, BC_PLANNING_HINTS_SIZE);
     advice->sleep = 60 * 60;
@@ -387,6 +399,7 @@ int bc_planning_assess(const struct bc_perception* sight, struct bc_planning_rec
         case BC_GLIMPSE_LOADING: return _bc_planning_assess_loading(&sight->detail, advice);
         case BC_GLIMPSE_GAME_TERM_ACCEPTANCE_UNSELECTED: return _bc_planning_assess_game_term_acceptance_unselected(&sight->detail, advice);
         case BC_GLIMPSE_GAME_TERM_ACCEPTANCE_SELECTED: return _bc_planning_assess_game_term_acceptance_selected(&sight->detail, advice);
+        case BC_GLIMPSE_GAME_LOGIN_WITH_METAMASK: return _bc_planning_assess_game_login_with_metamask(&sight->detail, advice);
     }
     panic("unknown glimpse: %d", sight->glimpse);
 }

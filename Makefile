@@ -102,6 +102,7 @@ BCPACK_PPM_SOURCES = \
 	src/ppm/game_exit.ppm \
 	src/ppm/game_kiosk_fullscreen.ppm \
 	src/ppm/game_kiosk_title.ppm \
+	src/ppm/game_login_metamask_button.ppm \
 	src/ppm/game_paused_heroes.ppm \
 	src/ppm/game_selection_treasure_hunt.ppm \
 	src/ppm/game_term_acceptance_checkbox.ppm \

@@ -12,6 +12,17 @@
 
 struct bc_canvas_pixmap* shot = NULL;
 
+static void test_perceive_login_with_metamask(void** state) {
+    unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_login_1.ppm", shot, &width, &height));
+    assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
+    struct bc_perception sight; assert_false(bc_perceive(shot, &sight));
+    assert_int_equal(sight.glimpse, BC_GLIMPSE_GAME_LOGIN_WITH_METAMASK);
+    assert_int_equal(sight.detail.game_login_with_metamask.button.tl.row, 441);
+    assert_int_equal(sight.detail.game_login_with_metamask.button.tl.col, 401);
+    assert_int_equal(sight.detail.game_login_with_metamask.button.br.row, 482);
+    assert_int_equal(sight.detail.game_login_with_metamask.button.br.col, 443);
+}
+
 static void test_perceive_term_acceptance_selected(void** state) {
     unsigned int width, height; assert_false(bc_canvas_load("test/samples/game_term_acceptance_selected_1.ppm", shot, &width, &height));
     assert_int_equal(width, BC_KIOSK_WIDTH); assert_int_equal(height, BC_KIOSK_HEIGHT);
@@ -264,7 +275,8 @@ int main(void) {
     openlog(NULL, LOG_PERROR, LOG_LOCAL0);
     shot = malloc(sizeof(struct bc_canvas_pixmap));
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_perceive_term_acceptance_selected),
+        cmocka_unit_test(test_perceive_login_with_metamask),
+//        cmocka_unit_test(test_perceive_term_acceptance_selected),
 //        cmocka_unit_test(test_perceive_term_acceptance_unselected),
 //        cmocka_unit_test(test_perceive_error_unity),
 //        cmocka_unit_test(test_perceive_loading),
