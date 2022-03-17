@@ -337,6 +337,10 @@ int _bc_planning_assess_game_term_acceptance_unselected(const union bc_perceptio
     const struct bc_bbox* bbox = &detail->game_term_acceptance_unselected.checkbox;
     hint->detail.mouse_click.coord.col = bc_random_sample_uniform(bbox->tl.col, bbox->br.col);
     hint->detail.mouse_click.coord.row = bc_random_sample_uniform(bbox->tl.row, bbox->br.row);
+    (++hint)->type = BC_HINT_MOUSE_CLICK; hint->detail.mouse_click.coord.col = 0; hint->detail.mouse_click.coord.row = 0;
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Down");
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Down");
+    (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Down");
     advice->sleep = 1;
     return 0;
 }
