@@ -149,7 +149,7 @@ int _bc_planning_assess_game_kiosk_unscrolled(const union bc_perception_detail* 
         (++hint)->type = BC_HINT_MOUSE_DRAG;
         hint->detail.mouse_drag.from.col = 6;
         hint->detail.mouse_drag.from.row = 573;
-        hint->detail.mouse_drag.to.col = BC_KIOSK_WIDTH / 32;
+        hint->detail.mouse_drag.to.col = BC_KIOSK_WIDTH / 4;
         hint->detail.mouse_drag.to.row = 573;
     }
     advice->sleep = 0;
