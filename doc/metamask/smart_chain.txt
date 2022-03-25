@@ -1,0 +1,31 @@
+bcplayer1 account setup
+
+RESET FIREFOX
+1. Stop firefox
+2. rm -rf ~bcplayer1/.cache/mozilla ~bcplayer1/.mozilla
+3. Hide the bookmark toolbar: <ctrl><shift>b
+4. Settings, privacy and security:
+  - enable delete cookies and site data when firefox is closed
+  - disable ask to save logins and passwords
+  - never remember story
+
+INSTALL METAMASK PLUGIN
+1. https://metamask.io/download
+2. Allow execution in private mode
+3. Recover the wallet
+4. Sync to the Smart Chain network
+
+SYNC TO THE SMART CHAIN
+- Network Name: Smart Chain
+- New RPC URL: https://bsc-dataseed.binance.org/
+- ChainID: 56
+- Symbol: BNB
+- Block Explorer URL: https://bscscan.com
+
+IMPORT TOKENS
+- BUSD: 0xe9e7cea3dedca5984780bafc599bd69add087d56
+- BCOIN: 0x00e1656e45f18ec6747F5a8496Fd39B50b38396D
+
+TEST ACCESS
+- https://app.bombcrypto.io
+
