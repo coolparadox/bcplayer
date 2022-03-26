@@ -36,6 +36,7 @@ This is a personal project for a bot in pure C for Linux.
 ## Tested under / with
 - Gentoo Linux 64 bit under WSL 2
 - Bombcrypto version 37
+- [Demonstration video](https://coolparadox.github.io/bcplayer/bcplay_demo_20220326.mp4)
 
 # Licensing
 GPL-v3; see https://www.gnu.org/licenses/gpl-3.0.en.html
