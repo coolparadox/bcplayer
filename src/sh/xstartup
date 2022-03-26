@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-i3 &
-exec ~/bcplay $(~/get_metamask_uuid)

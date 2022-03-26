@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCREENSHOTS_DIR=/tmp/screenshots
-mkdir -p $SCREENSHOTS_DIR
-NOW=$( date -u '+%s' )
-TARGET_PATH=$SCREENSHOTS_DIR/${NOW}.xwd
-DISPLAY=:1 sudo -u bcplayer1 xwd -root >$TARGET_PATH
-echo $TARGET_PATH
