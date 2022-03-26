@@ -1,7 +1,7 @@
 # bcplayer
 _A(nother) Bombcrypto bot_
 
-This is a personal project for a bot in pure C for Linux.
+This is a personal project for a bot in pure C that runs in the Linux OS.
 
 ## Requirements
 - libX11 1.7.3
