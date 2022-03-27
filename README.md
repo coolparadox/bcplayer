@@ -21,7 +21,7 @@ This is a personal project for a bot in pure C that runs in the Linux OS.
 ## Run
 
 ### Start play session
-- make debug play
+- make debug start
 
 ### Watch play session
 - make watch
