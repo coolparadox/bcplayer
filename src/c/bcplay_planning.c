@@ -115,7 +115,7 @@ int _bc_planning_assess_metamask_unlock(const union bc_perception_detail* detail
     // Metamask awaits for the unlock password.
     log_debug("advice: type metamask password");
     struct bc_planning_hint* hint = advice->hints - 1;
-    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, "3hdna3Ut");
+    (++hint)->type = BC_HINT_KEYBOARD_SEQUENCE; strcpy(hint->detail.keyboard_sequence.keys, BC_METAMASK_PASSWORD);
     (++hint)->type = BC_HINT_KEYBOARD_CLICK; strcpy(hint->detail.keyboard_click.key, "Return");
     advice->sleep = 5;
     return 0;
