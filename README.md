@@ -15,8 +15,10 @@ This is a personal project for a bot in pure C that runs in the Linux OS.
 ## Setup
 - Create user bcplayer1.
 - Make sure it can play Bombcrypto manually; see doc/metamask/smart_chain.txt
-- Update BCPLAYER_USER_ID in src/c/bcplay_conf.h to bcplayer1's user ID.
-- Configure sudo superpowers for the user that will start the bot (NOT the bcplayer1 user).
+- Update the following configurations in src/c/bcplay_conf.h:
+  - BCPLAYER_USER_ID with the ID of user bcplayer1 in your system.
+  - BC_METAMASK_PASSWORD with the password to the Metamask Firefox extension for user bcplayer1. 
+- Configure sudo superpowers for the user that will start the bot (ie, NOT the bcplayer1 user).
 
 ## Run
 
